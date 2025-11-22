@@ -130,6 +130,16 @@ class TimerViewModel: ObservableObject {
         return String(format: "%02d:%02d", minutes, secs)
     }
 
+    func updateSettings(_ newSettings: TimerSettings) {
+        // Don't update if timer is running
+        guard !isRunning else { return }
+
+        settings = newSettings
+
+        // Reset current timer with new duration
+        timeLeft = totalTime
+    }
+
     deinit {
         stopTimer()
     }

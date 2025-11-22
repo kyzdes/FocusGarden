@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TimerSettings: Codable {
+struct TimerSettings: Codable, Equatable {
     var focusTime: Int // in minutes
     var breakTime: Int
     var longBreakTime: Int

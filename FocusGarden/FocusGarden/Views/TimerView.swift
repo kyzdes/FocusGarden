@@ -106,6 +106,9 @@ struct TimerView: View {
             .padding(.bottom, 32)
         }
         .cardStyle()
+        .onChange(of: settings) { newSettings in
+            viewModel.updateSettings(newSettings)
+        }
     }
 
     private var modeColor: Color {
