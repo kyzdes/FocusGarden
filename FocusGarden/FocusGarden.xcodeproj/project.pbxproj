@@ -1,0 +1,83 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FocusGardenApp.swift in Sources */,
+		ContentView.swift in Sources */,
+		TimerView.swift in Sources */,
+		GardenView.swift in Sources */,
+		SettingsView.swift in Sources */,
+		StatisticsView.swift in Sources */,
+		ProgressTrackerView.swift in Sources */,
+		TimerSettings.swift in Sources */,
+		Progress.swift in Sources */,
+		DailyRecord.swift in Sources */,
+		AppViewModel.swift in Sources */,
+		TimerViewModel.swift in Sources */,
+		StorageManager.swift in Sources */,
+		SoundManager.swift in Sources */,
+		Extensions.swift in Sources */,
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FocusGarden.app */,
+		FocusGardenApp.swift */,
+		ContentView.swift */,
+		TimerView.swift */,
+		GardenView.swift */,
+		SettingsView.swift */,
+		StatisticsView.swift */,
+		ProgressTrackerView.swift */,
+		TimerSettings.swift */,
+		Progress.swift */,
+		DailyRecord.swift */,
+		AppViewModel.swift */,
+		TimerViewModel.swift */,
+		StorageManager.swift */,
+		SoundManager.swift */,
+		Extensions.swift */,
+		Info.plist */,
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		Begin PBXFrameworksBuildPhase */,
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		Main Group */,
+		FocusGarden */,
+		Models */,
+		Views */,
+		ViewModels */,
+		Managers */,
+		Helpers */,
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FocusGarden */,
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		Project object */,
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		Sources */,
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		Debug */,
+		Release */,
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		Build configuration list */,
+/* End XCConfigurationList section */
+	};
+	rootObject = Project object;
+}
