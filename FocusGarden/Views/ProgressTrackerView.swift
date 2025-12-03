@@ -16,25 +16,25 @@ struct ProgressTrackerView: View {
             HStack(spacing: 16) {
                 ProgressCard(
                     icon: "flame.fill",
-                    title: "Today",
+                    title: NSLocalizedString("progress_today", comment: "Today's progress title"),
                     value: "\(progress.todayPomodoros)",
-                    subtitle: "Pomodoros",
+                    subtitle: NSLocalizedString("progress_pomodoros", comment: "Pomodoros subtitle"),
                     color: .orange
                 )
 
                 ProgressCard(
                     icon: "calendar",
-                    title: "Streak",
+                    title: NSLocalizedString("progress_streak", comment: "Streak title"),
                     value: "\(progress.currentStreak)",
-                    subtitle: "Days",
+                    subtitle: NSLocalizedString("progress_days", comment: "Days subtitle"),
                     color: .green
                 )
 
                 ProgressCard(
                     icon: "target",
-                    title: "Total",
+                    title: NSLocalizedString("progress_total", comment: "Total title"),
                     value: "\(progress.completedSessions)",
-                    subtitle: "Sessions",
+                    subtitle: NSLocalizedString("progress_sessions", comment: "Sessions subtitle"),
                     color: .blue
                 )
             }

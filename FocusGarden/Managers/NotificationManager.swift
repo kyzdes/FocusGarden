@@ -45,14 +45,14 @@ class NotificationManager {
 
         switch mode {
         case .focus:
-            content.title = "Focus Session Complete! 🎉"
-            content.body = "Great work! Time for a break."
+            content.title = NSLocalizedString("notification_focus_title", comment: "Focus session complete title")
+            content.body = NSLocalizedString("notification_focus_body", comment: "Focus session complete body")
         case .shortBreak:
-            content.title = "Break Complete! 💪"
-            content.body = "Ready to get back to work?"
+            content.title = NSLocalizedString("notification_short_break_title", comment: "Short break complete title")
+            content.body = NSLocalizedString("notification_short_break_body", comment: "Short break complete body")
         case .longBreak:
-            content.title = "Long Break Complete! ✨"
-            content.body = "Feeling refreshed? Let's continue!"
+            content.title = NSLocalizedString("notification_long_break_title", comment: "Long break complete title")
+            content.body = NSLocalizedString("notification_long_break_body", comment: "Long break complete body")
         }
 
         content.sound = .default

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Progress: Codable {
+struct Progress: Codable, Equatable {
     var totalPomodoros: Int
     var todayPomodoros: Int
     var completedSessions: Int  // Session = Focus + Break

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var appViewModel: AppViewModel
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showSettings = false
     @State private var showStatistics = false
 
@@ -16,11 +17,7 @@ struct ContentView: View {
         ZStack {
             // Background gradient
             LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 0.96, green: 0.95, blue: 0.94),
-                    Color(red: 0.98, green: 0.98, blue: 0.97),
-                    Color(red: 0.91, green: 0.96, blue: 0.94)
-                ]),
+                gradient: backgroundGradient,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -38,6 +35,11 @@ struct ContentView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView(
                 settings: $appViewModel.settings,
+                language: $appViewModel.language,
+                theme: $appViewModel.theme,
+                iCloudSyncEnabled: $appViewModel.iCloudSyncEnabled,
+                getProgress: { appViewModel.progress },
+                onImportProgress: { appViewModel.importProgress($0) },
                 onClose: { showSettings = false }
             )
         }
@@ -95,15 +97,16 @@ struct ContentView: View {
 struct HeaderView: View {
     let onSettingsClick: () -> Void
     let onStatisticsClick: () -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("🌱 Focus Garden")
+                Text("app_title")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundColor(.textPrimary)
 
-                Text("Grow your productivity")
+                Text("app_subtitle")
                     .font(.system(size: 14))
                     .foregroundColor(.textSecondary)
             }
@@ -116,7 +119,7 @@ struct HeaderView: View {
                         .font(.system(size: 20))
                         .foregroundColor(.textSecondary)
                         .frame(width: 44, height: 44)
-                        .background(Color.white.opacity(0.8))
+                        .background(Color.backgroundCard.opacity(colorScheme == .dark ? 0.7 : 0.8))
                         .clipShape(Circle())
                 }
 
@@ -125,13 +128,31 @@ struct HeaderView: View {
                         .font(.system(size: 20))
                         .foregroundColor(.textSecondary)
                         .frame(width: 44, height: 44)
-                        .background(Color.white.opacity(0.8))
+                        .background(Color.backgroundCard.opacity(colorScheme == .dark ? 0.7 : 0.8))
                         .clipShape(Circle())
                 }
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
+    }
+}
+
+private extension ContentView {
+    var backgroundGradient: Gradient {
+        if colorScheme == .dark {
+            return Gradient(colors: [
+                Color(red: 0.10, green: 0.11, blue: 0.12),
+                Color(red: 0.13, green: 0.14, blue: 0.16),
+                Color(red: 0.08, green: 0.11, blue: 0.12)
+            ])
+        } else {
+            return Gradient(colors: [
+                Color(red: 0.96, green: 0.95, blue: 0.94),
+                Color(red: 0.98, green: 0.98, blue: 0.97),
+                Color(red: 0.91, green: 0.96, blue: 0.94)
+            ])
+        }
     }
 }
 

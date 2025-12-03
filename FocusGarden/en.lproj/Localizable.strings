@@ -1,0 +1,92 @@
+"app_title" = "🌱 Focus Garden";
+"app_subtitle" = "Grow your productivity";
+"cycle_number" = "Cycle %d";
+
+"focus_time" = "Focus Time";
+"short_break" = "Short Break";
+"long_break" = "Long Break";
+
+"garden_title" = "Your Focus Garden";
+"garden_subtitle" = "Complete Pomodoros to grow your sanctuary";
+"garden_empty_title" = "Your garden awaits";
+"garden_empty_subtitle" = "Complete your first Pomodoro to plant a tree";
+"stat_trees" = "Trees";
+"stat_clouds" = "Clouds";
+"stat_animals" = "Animals";
+
+"progress_today" = "Today";
+"progress_pomodoros" = "Pomodoros";
+"progress_streak" = "Streak";
+"progress_days" = "Days";
+"progress_total" = "Total";
+"progress_sessions" = "Sessions";
+
+"statistics_title" = "Statistics";
+"statistics_subtitle" = "Your productivity insights";
+"time_range_week" = "Week";
+"time_range_month" = "Month";
+"time_range_all" = "All";
+"time_range_picker" = "Time Range";
+"statistics_activity" = "Activity";
+
+"metrics_total_title" = "Total";
+"metrics_total_subtitle" = "pomodoros";
+"metrics_focus_title" = "Focus Time";
+"metrics_focus_subtitle" = "total time";
+"metrics_this_week_title" = "This Week";
+"metrics_this_week_subtitle" = "sessions";
+"metrics_average_title" = "Average";
+"metrics_average_subtitle" = "per day";
+
+"achievements_title" = "Achievements";
+"achievements_best_day_title" = "Best Day";
+"achievements_current_streak_title" = "Current Streak";
+"achievements_current_streak_subtitle" = "days in a row";
+"achievements_total_days_title" = "Total Days";
+"achievements_total_days_subtitle" = "with activity";
+"statistics_no_data" = "No data";
+
+"activity_calendar_title" = "Activity Calendar (Last 90 Days)";
+"activity_calendar_less" = "Less";
+"activity_calendar_more" = "More";
+
+"chart_date" = "Date";
+"chart_pomodoros" = "Pomodoros";
+
+"settings_title" = "Settings";
+"settings_language" = "Language";
+"settings_language_picker" = "Language";
+"language_english" = "English";
+"language_russian" = "Russian";
+"settings_theme" = "Theme";
+"settings_theme_toggle" = "Dark Mode";
+"settings_theme_subtitle" = "Use a darker look for low-light environments";
+"settings_icloud" = "iCloud";
+"settings_icloud_toggle" = "Sync progress with iCloud";
+"settings_icloud_subtitle" = "Keep your stats in sync across your devices";
+"settings_icloud_status_on" = "iCloud sync enabled";
+"settings_icloud_status_off" = "iCloud sync disabled";
+"settings_icloud_status_no_account" = "Sign in to iCloud to sync";
+"settings_icloud_status_restricted" = "iCloud restricted";
+"settings_icloud_status_unavailable" = "iCloud temporarily unavailable";
+"settings_icloud_status_checking" = "Checking iCloud status…";
+"settings_backup_title" = "Backup";
+"settings_export" = "Export Progress";
+"settings_import" = "Import Progress";
+"settings_import_error_title" = "Import Failed";
+"settings_import_error" = "Could not import the file. Please make sure it is a valid Focus Garden export.";
+"settings_timer_duration" = "Timer Duration";
+"settings_sound" = "Sound";
+"settings_completion_sound" = "Completion Sound";
+"settings_completion_sound_subtitle" = "Play sound when timer completes";
+"settings_pomodoro_title" = "The Pomodoro Technique";
+"settings_pomodoro_description" = "Work for focused intervals (usually 25 minutes), then take a short break. After 4 cycles, take a longer break. This helps maintain high focus and prevents burnout.";
+"done_button" = "Done";
+"minutes_unit" = "min";
+
+"notification_focus_title" = "Focus Session Complete! 🎉";
+"notification_focus_body" = "Great work! Time for a break.";
+"notification_short_break_title" = "Break Complete! 💪";
+"notification_short_break_body" = "Ready to get back to work?";
+"notification_long_break_title" = "Long Break Complete! ✨";
+"notification_long_break_body" = "Feeling refreshed? Let's continue!";

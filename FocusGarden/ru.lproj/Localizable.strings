@@ -1,0 +1,92 @@
+"app_title" = "🌱 Focus Garden";
+"app_subtitle" = "Выращивайте продуктивность";
+"cycle_number" = "Цикл %d";
+
+"focus_time" = "Фокус";
+"short_break" = "Короткий перерыв";
+"long_break" = "Длинный перерыв";
+
+"garden_title" = "Ваш сад концентрации";
+"garden_subtitle" = "Выполняйте помодоро, чтобы вырастить убежище";
+"garden_empty_title" = "Ваш сад ждёт";
+"garden_empty_subtitle" = "Завершите первый помодоро, чтобы посадить дерево";
+"stat_trees" = "Деревья";
+"stat_clouds" = "Облака";
+"stat_animals" = "Животные";
+
+"progress_today" = "Сегодня";
+"progress_pomodoros" = "Помодоро";
+"progress_streak" = "Серия";
+"progress_days" = "Дней";
+"progress_total" = "Всего";
+"progress_sessions" = "Сессии";
+
+"statistics_title" = "Статистика";
+"statistics_subtitle" = "Инсайты о вашей продуктивности";
+"time_range_week" = "Неделя";
+"time_range_month" = "Месяц";
+"time_range_all" = "Все";
+"time_range_picker" = "Диапазон времени";
+"statistics_activity" = "Активность";
+
+"metrics_total_title" = "Всего";
+"metrics_total_subtitle" = "помодоро";
+"metrics_focus_title" = "Фокус-время";
+"metrics_focus_subtitle" = "общее время";
+"metrics_this_week_title" = "Эта неделя";
+"metrics_this_week_subtitle" = "сессии";
+"metrics_average_title" = "Среднее";
+"metrics_average_subtitle" = "в день";
+
+"achievements_title" = "Достижения";
+"achievements_best_day_title" = "Лучший день";
+"achievements_current_streak_title" = "Текущая серия";
+"achievements_current_streak_subtitle" = "дней подряд";
+"achievements_total_days_title" = "Всего дней";
+"achievements_total_days_subtitle" = "с активностью";
+"statistics_no_data" = "Нет данных";
+
+"activity_calendar_title" = "Календарь активности (последние 90 дней)";
+"activity_calendar_less" = "Меньше";
+"activity_calendar_more" = "Больше";
+
+"chart_date" = "Дата";
+"chart_pomodoros" = "Помодоро";
+
+"settings_title" = "Настройки";
+"settings_language" = "Язык";
+"settings_language_picker" = "Выберите язык";
+"language_english" = "Английский";
+"language_russian" = "Русский";
+"settings_theme" = "Тема";
+"settings_theme_toggle" = "Тёмная тема";
+"settings_theme_subtitle" = "Комфортный вид для условий слабого освещения";
+"settings_icloud" = "iCloud";
+"settings_icloud_toggle" = "Синхронизировать прогресс";
+"settings_icloud_subtitle" = "Держите статистику синхронизированной на всех устройствах";
+"settings_icloud_status_on" = "Синхронизация включена";
+"settings_icloud_status_off" = "Синхронизация выключена";
+"settings_icloud_status_no_account" = "Войдите в iCloud для синхронизации";
+"settings_icloud_status_restricted" = "Доступ к iCloud ограничен";
+"settings_icloud_status_unavailable" = "iCloud временно недоступен";
+"settings_icloud_status_checking" = "Проверяем статус iCloud…";
+"settings_backup_title" = "Резервная копия";
+"settings_export" = "Экспорт прогресса";
+"settings_import" = "Импорт прогресса";
+"settings_import_error_title" = "Импорт не удался";
+"settings_import_error" = "Не удалось импортировать файл. Убедитесь, что это экспорт Focus Garden.";
+"settings_timer_duration" = "Длительность таймера";
+"settings_sound" = "Звук";
+"settings_completion_sound" = "Звук завершения";
+"settings_completion_sound_subtitle" = "Воспроизводить звук при завершении таймера";
+"settings_pomodoro_title" = "Техника Помодоро";
+"settings_pomodoro_description" = "Работайте сфокусированными интервалами (обычно 25 минут), затем делайте короткий перерыв. После 4 циклов сделайте длинный перерыв. Это помогает держать концентрацию и избегать выгорания.";
+"done_button" = "Готово";
+"minutes_unit" = "мин";
+
+"notification_focus_title" = "Сессия фокуса завершена! 🎉";
+"notification_focus_body" = "Отличная работа! Время для перерыва.";
+"notification_short_break_title" = "Перерыв завершён! 💪";
+"notification_short_break_body" = "Готовы вернуться к работе?";
+"notification_long_break_title" = "Длинный перерыв завершён! ✨";
+"notification_long_break_body" = "Отдохнули? Продолжаем!";

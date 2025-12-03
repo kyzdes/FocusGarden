@@ -14,6 +14,17 @@ enum TimerMode: String, CaseIterable {
     case shortBreak = "Short Break"
     case longBreak = "Long Break"
 
+    var localizedTitle: String {
+        switch self {
+        case .focus:
+            return NSLocalizedString("focus_time", comment: "Focus mode title")
+        case .shortBreak:
+            return NSLocalizedString("short_break", comment: "Short break mode title")
+        case .longBreak:
+            return NSLocalizedString("long_break", comment: "Long break mode title")
+        }
+    }
+
     var color: String {
         switch self {
         case .focus: return "FocusColor"

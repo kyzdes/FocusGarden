@@ -13,6 +13,7 @@ struct TimerView: View {
     let onBreakComplete: () -> Void
 
     @StateObject private var viewModel: TimerViewModel
+    @Environment(\.colorScheme) private var colorScheme
 
     init(settings: TimerSettings, onFocusComplete: @escaping () -> Void, onBreakComplete: @escaping () -> Void) {
         self.settings = settings
@@ -46,7 +47,7 @@ struct TimerView: View {
             ZStack {
                 // Background circle
                 Circle()
-                    .stroke(Color.gray.opacity(0.1), lineWidth: 12)
+                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.35 : 0.1), lineWidth: 12)
                     .frame(width: 280, height: 280)
 
                 // Progress circle
@@ -67,7 +68,10 @@ struct TimerView: View {
                         .foregroundColor(.textPrimary)
                         .monospacedDigit()
 
-                    Text("Cycle \(viewModel.completedCycles + 1)")
+                    Text(String.localizedStringWithFormat(
+                        NSLocalizedString("cycle_number", comment: "Current cycle number"),
+                        viewModel.completedCycles + 1
+                    ))
                         .font(.system(size: 14))
                         .foregroundColor(.textTertiary)
                 }
@@ -104,9 +108,9 @@ struct TimerView: View {
                         .font(.system(size: 24))
                         .foregroundColor(.textSecondary)
                         .frame(width: 64, height: 64)
-                        .background(Color.white)
+                        .background(Color.backgroundCard)
                         .clipShape(Circle())
-                        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.35 : 0.1), radius: 8, x: 0, y: 4)
                 }
             }
             .padding(.bottom, 32)
@@ -148,7 +152,7 @@ struct ModeButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text(mode.rawValue)
+            Text(mode.localizedTitle)
                 .font(.system(size: 12, weight: isSelected ? .semibold : .regular))
                 .foregroundColor(isSelected ? .textPrimary : .textSecondary)
                 .padding(.horizontal, 16)

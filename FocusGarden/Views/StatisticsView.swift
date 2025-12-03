@@ -18,6 +18,17 @@ struct StatisticsView: View {
         case week = "Week"
         case month = "Month"
         case all = "All"
+
+        var title: String {
+            switch self {
+            case .week:
+                return NSLocalizedString("time_range_week", comment: "Week range title")
+            case .month:
+                return NSLocalizedString("time_range_month", comment: "Month range title")
+            case .all:
+                return NSLocalizedString("time_range_all", comment: "All time range title")
+            }
+        }
     }
 
     var body: some View {
@@ -28,11 +39,11 @@ struct StatisticsView: View {
                 // Header
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Statistics")
+                        Text("statistics_title")
                             .font(.system(size: 28, weight: .bold))
                             .foregroundColor(.textPrimary)
 
-                        Text("Your productivity insights")
+                        Text("statistics_subtitle")
                             .font(.system(size: 14))
                             .foregroundColor(.textSecondary)
                     }
@@ -44,7 +55,7 @@ struct StatisticsView: View {
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.textSecondary)
                             .frame(width: 44, height: 44)
-                            .background(Color.white)
+                            .background(Color.backgroundCard)
                             .clipShape(Circle())
                     }
                 }
@@ -60,9 +71,9 @@ struct StatisticsView: View {
                         // Chart Section
                         VStack(spacing: 20) {
                             // Time range selector
-                            Picker("Time Range", selection: $timeRange) {
+                            Picker(NSLocalizedString("time_range_picker", comment: "Time range picker"), selection: $timeRange) {
                                 ForEach(TimeRange.allCases, id: \.self) { range in
-                                    Text(range.rawValue).tag(range)
+                                    Text(range.title).tag(range)
                                 }
                             }
                             .pickerStyle(SegmentedPickerStyle())
@@ -170,33 +181,33 @@ struct MetricsGrid: View {
         ], spacing: 12) {
             MetricCard(
                 icon: "trophy.fill",
-                title: "Total",
+                title: NSLocalizedString("metrics_total_title", comment: "Total pomodoros title"),
                 value: "\(progress.totalPomodoros)",
-                subtitle: "pomodoros",
+                subtitle: NSLocalizedString("metrics_total_subtitle", comment: "Total pomodoros subtitle"),
                 color: .orange
             )
 
             MetricCard(
                 icon: "clock.fill",
-                title: "Focus Time",
+                title: NSLocalizedString("metrics_focus_title", comment: "Focus time title"),
                 value: "\(totalFocusHours)h \(totalFocusMinutes)m",
-                subtitle: "total time",
+                subtitle: NSLocalizedString("metrics_focus_subtitle", comment: "Focus time subtitle"),
                 color: .blue
             )
 
             MetricCard(
                 icon: "chart.line.uptrend.xyaxis",
-                title: "This Week",
+                title: NSLocalizedString("metrics_this_week_title", comment: "This week title"),
                 value: "\(thisWeekTotal)",
-                subtitle: "sessions",
+                subtitle: NSLocalizedString("metrics_this_week_subtitle", comment: "This week subtitle"),
                 color: .green
             )
 
             MetricCard(
                 icon: "calendar",
-                title: "Average",
+                title: NSLocalizedString("metrics_average_title", comment: "Average title"),
                 value: "\(avgPerDay)",
-                subtitle: "per day",
+                subtitle: NSLocalizedString("metrics_average_subtitle", comment: "Average subtitle"),
                 color: .purple
             )
         }
@@ -252,15 +263,15 @@ struct ActivityChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Activity")
+            Text("statistics_activity")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.textPrimary)
 
             if #available(iOS 16.0, *) {
                 Chart(data) { record in
                     BarMark(
-                        x: .value("Date", record.date),
-                        y: .value("Pomodoros", record.pomodoros)
+                        x: .value(NSLocalizedString("chart_date", comment: "Chart date axis"), record.date),
+                        y: .value(NSLocalizedString("chart_pomodoros", comment: "Chart pomodoros axis"), record.pomodoros)
                     )
                     .foregroundStyle(
                         LinearGradient(
@@ -339,32 +350,32 @@ struct AchievementsCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Achievements")
+            Text("achievements_title")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.textPrimary)
 
             HStack(spacing: 8) {
                 AchievementItem(
                     emoji: "🏆",
-                    title: "Best Day",
+                    title: NSLocalizedString("achievements_best_day_title", comment: "Best day title"),
                     value: bestDay.pomodoros > 0 ? "\(bestDay.pomodoros)" : "-",
-                    subtitle: bestDay.date.toDate()?.toShortDateString() ?? "No data",
+                    subtitle: bestDay.date.toDate()?.toShortDateString() ?? NSLocalizedString("statistics_no_data", comment: "No data label"),
                     color: Color.orange
                 )
 
                 AchievementItem(
                     emoji: "🔥",
-                    title: "Current Streak",
+                    title: NSLocalizedString("achievements_current_streak_title", comment: "Current streak title"),
                     value: "\(progress.currentStreak)",
-                    subtitle: "days in a row",
+                    subtitle: NSLocalizedString("achievements_current_streak_subtitle", comment: "Current streak subtitle"),
                     color: Color.red
                 )
 
                 AchievementItem(
                     emoji: "🎯",
-                    title: "Total Days",
+                    title: NSLocalizedString("achievements_total_days_title", comment: "Total days title"),
                     value: "\(progress.history.count)",
-                    subtitle: "with activity",
+                    subtitle: NSLocalizedString("achievements_total_days_subtitle", comment: "Total days subtitle"),
                     color: Color.purple
                 )
             }
@@ -424,7 +435,7 @@ struct ActivityCalendar: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Activity Calendar (Last 90 Days)")
+            Text("activity_calendar_title")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.textPrimary)
 
@@ -443,7 +454,7 @@ struct ActivityCalendar: View {
 
             // Legend
             HStack(spacing: 8) {
-                Text("Less")
+                Text("activity_calendar_less")
                     .font(.system(size: 10))
                     .foregroundColor(.textTertiary)
 
@@ -453,7 +464,7 @@ struct ActivityCalendar: View {
                         .frame(width: 16, height: 16)
                 }
 
-                Text("More")
+                Text("activity_calendar_more")
                     .font(.system(size: 10))
                     .foregroundColor(.textTertiary)
             }

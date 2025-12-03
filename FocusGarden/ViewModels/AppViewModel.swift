@@ -12,14 +12,21 @@ class AppViewModel: ObservableObject {
     @Published var settings: TimerSettings
     @Published var progress: Progress
     @Published var lastCompletionDate: String?
+    @Published var language: AppLanguage
+    @Published var theme: AppTheme
+    @Published var iCloudSyncEnabled: Bool
 
     private let storageManager = StorageManager.shared
     private var cancellables = Set<AnyCancellable>()
+    private var cloudObserver: NSObjectProtocol?
 
     init() {
         self.settings = storageManager.loadSettings()
         self.progress = storageManager.loadProgress()
         self.lastCompletionDate = storageManager.loadLastDate()
+        self.language = storageManager.loadLanguage()
+        self.theme = storageManager.loadTheme()
+        self.iCloudSyncEnabled = storageManager.loadICloudEnabled()
 
         // Reset today's count if it's a new day
         let today = Date().toDateString()
@@ -28,6 +35,7 @@ class AppViewModel: ObservableObject {
         }
 
         setupObservers()
+        setupCloudSync()
     }
 
     private func setupObservers() {
@@ -43,7 +51,40 @@ class AppViewModel: ObservableObject {
         $progress
             .dropFirst()
             .sink { [weak self] progress in
-                self?.storageManager.saveProgress(progress)
+                guard let self else { return }
+                self.storageManager.saveProgress(progress)
+                if self.iCloudSyncEnabled {
+                    self.storageManager.saveProgressToCloud(progress)
+                }
+            }
+            .store(in: &cancellables)
+
+        // Save language whenever it changes
+        $language
+            .dropFirst()
+            .sink { [weak self] language in
+                self?.storageManager.saveLanguage(language)
+            }
+            .store(in: &cancellables)
+
+        // Save theme whenever it changes
+        $theme
+            .dropFirst()
+            .sink { [weak self] theme in
+                self?.storageManager.saveTheme(theme)
+            }
+            .store(in: &cancellables)
+
+        // Save iCloud preference
+        $iCloudSyncEnabled
+            .dropFirst()
+            .sink { [weak self] enabled in
+                guard let self else { return }
+                self.storageManager.saveICloudEnabled(enabled)
+                if enabled {
+                    self.storageManager.saveProgressToCloud(self.progress)
+                    NSUbiquitousKeyValueStore.default.synchronize()
+                }
             }
             .store(in: &cancellables)
     }
@@ -129,6 +170,44 @@ class AppViewModel: ObservableObject {
         progress = .empty
         settings = .default
         lastCompletionDate = nil
+        language = .english
+        theme = .system
+        iCloudSyncEnabled = storageManager.loadICloudEnabled()
         storageManager.resetAllData()
+        storageManager.clearCloudProgress()
+    }
+
+    func importProgress(_ newProgress: Progress) {
+        progress = newProgress
+        lastCompletionDate = newProgress.todayPomodoros > 0 ? Date().toDateString() : nil
+        storageManager.saveProgress(newProgress)
+        if iCloudSyncEnabled {
+            storageManager.saveProgressToCloud(newProgress)
+        }
+        if let lastDate = lastCompletionDate {
+            storageManager.saveLastDate(lastDate)
+        }
+    }
+
+    private func setupCloudSync() {
+        NSUbiquitousKeyValueStore.default.synchronize()
+
+        cloudObserver = NotificationCenter.default.addObserver(
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self, self.iCloudSyncEnabled else { return }
+            guard let cloudProgress = self.storageManager.loadProgressFromCloud() else { return }
+            if cloudProgress != self.progress {
+                self.progress = cloudProgress
+            }
+        }
+    }
+
+    deinit {
+        if let cloudObserver {
+            NotificationCenter.default.removeObserver(cloudObserver)
+        }
     }
 }

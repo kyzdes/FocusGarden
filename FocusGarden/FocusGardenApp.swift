@@ -26,6 +26,8 @@ struct FocusGardenApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appViewModel)
+                .environment(\.locale, appViewModel.language.locale)
+                .preferredColorScheme(appViewModel.theme.colorScheme)
                 .onAppear {
                     // Remove any delivered notifications when app opens
                     NotificationManager.shared.removeAllDeliveredNotifications()

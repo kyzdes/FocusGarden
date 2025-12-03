@@ -14,11 +14,11 @@ struct GardenView: View {
         VStack(spacing: 0) {
             // Header
             VStack(alignment: .leading, spacing: 4) {
-                Text("Your Focus Garden")
+                Text("garden_title")
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.textPrimary)
 
-                Text("Complete Pomodoros to grow your sanctuary")
+                Text("garden_subtitle")
                     .font(.system(size: 13))
                     .foregroundColor(.textSecondary)
             }
@@ -70,11 +70,11 @@ struct GardenView: View {
                         Text("🌱")
                             .font(.system(size: 48))
 
-                        Text("Your garden awaits")
+                        Text("garden_empty_title")
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(.textSecondary)
 
-                        Text("Complete your first Pomodoro to plant a tree")
+                        Text("garden_empty_subtitle")
                             .font(.system(size: 12))
                             .foregroundColor(.textTertiary)
                             .multilineTextAlignment(.center)
@@ -88,11 +88,11 @@ struct GardenView: View {
 
             // Garden stats
             HStack(spacing: 0) {
-                StatItem(icon: "🌳", count: progress.trees, label: "Trees")
+                StatItem(icon: "🌳", count: progress.trees, label: NSLocalizedString("stat_trees", comment: "Trees stat label"))
                 Divider().frame(height: 30)
-                StatItem(icon: "☁️", count: progress.clouds, label: "Clouds")
+                StatItem(icon: "☁️", count: progress.clouds, label: NSLocalizedString("stat_clouds", comment: "Clouds stat label"))
                 Divider().frame(height: 30)
-                StatItem(icon: "🦋", count: progress.animals.count, label: "Animals")
+                StatItem(icon: "🦋", count: progress.animals.count, label: NSLocalizedString("stat_animals", comment: "Animals stat label"))
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)

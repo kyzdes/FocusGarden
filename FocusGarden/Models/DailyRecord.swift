@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DailyRecord: Codable, Identifiable {
+struct DailyRecord: Codable, Identifiable, Equatable {
     let id: UUID
     let date: String // ISO date format (yyyy-MM-dd)
     var pomodoros: Int
