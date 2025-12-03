@@ -387,9 +387,13 @@ class LiveActivityManager {
         )
 
         do {
+            let content = ActivityContent(
+                state: state,
+                staleDate: nil
+            )
             activity = try Activity<TimerActivityAttributes>.request(
                 attributes: attributes,
-                contentState: state,
+                content: content,
                 pushType: nil
             )
         } catch {
@@ -406,14 +410,22 @@ class LiveActivityManager {
         )
 
         Task {
-            await activity.update(using: state)
+            let content = ActivityContent(
+                state: state,
+                staleDate: nil
+            )
+            await activity.update(content)
         }
     }
 
     func end() {
         guard let activity else { return }
         Task {
-            await activity.end(dismissalPolicy: .immediate)
+            let content = ActivityContent(
+                state: activity.content.state,
+                staleDate: nil
+            )
+            await activity.end(content, dismissalPolicy: .immediate)
         }
         self.activity = nil
     }

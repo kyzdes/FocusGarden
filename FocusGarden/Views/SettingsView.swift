@@ -353,7 +353,7 @@ struct TimerSlider: View {
                 step: Double(step)
             )
             .accentColor(color)
-            .onChange(of: value) { _ in
+            .onChange(of: value) {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
             }
         }

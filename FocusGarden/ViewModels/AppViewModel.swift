@@ -198,9 +198,11 @@ class AppViewModel: ObservableObject {
             queue: .main
         ) { [weak self] _ in
             guard let self, self.iCloudSyncEnabled else { return }
-            guard let cloudProgress = self.storageManager.loadProgressFromCloud() else { return }
-            if cloudProgress != self.progress {
-                self.progress = cloudProgress
+            Task { @MainActor in
+                guard let cloudProgress = self.storageManager.loadProgressFromCloud() else { return }
+                if cloudProgress != self.progress {
+                    self.progress = cloudProgress
+                }
             }
         }
     }
