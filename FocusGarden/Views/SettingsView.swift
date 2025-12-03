@@ -9,6 +9,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import CloudKit
+import UIKit
 
 struct SettingsView: View {
     @Binding var settings: TimerSettings
@@ -352,6 +353,9 @@ struct TimerSlider: View {
                 step: Double(step)
             )
             .accentColor(color)
+            .onChange(of: value) { _ in
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            }
         }
     }
 }

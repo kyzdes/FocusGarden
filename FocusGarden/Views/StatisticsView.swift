@@ -13,6 +13,10 @@ struct StatisticsView: View {
     let onClose: () -> Void
 
     @State private var timeRange: TimeRange = .week
+    private var todayRecord: DailyRecord {
+        let todayISO = Date().toISODateString()
+        return progress.history.first(where: { $0.date == todayISO }) ?? DailyRecord(date: todayISO, pomodoros: 0, focusMinutes: 0)
+    }
 
     enum TimeRange: String, CaseIterable {
         case week = "Week"
@@ -65,6 +69,10 @@ struct StatisticsView: View {
 
                 ScrollView {
                     VStack(spacing: 20) {
+                        // Today's summary
+                        TodaySummaryView(record: todayRecord)
+                            .padding(.horizontal, 20)
+
                         // Key Metrics
                         MetricsGrid(progress: progress)
 
@@ -486,6 +494,73 @@ struct ActivityCalendar: View {
         default:
             return Color.focusGreen
         }
+    }
+}
+
+struct TodaySummaryView: View {
+    let record: DailyRecord
+
+    private var focusHours: Int { record.focusMinutes / 60 }
+    private var focusMinutes: Int { record.focusMinutes % 60 }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("today_summary_title")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(.textPrimary)
+
+            HStack(spacing: 12) {
+                SummaryItem(
+                    icon: "🍅",
+                    title: NSLocalizedString("today_summary_pomodoros", comment: "Pomodoros today"),
+                    value: "\(record.pomodoros)"
+                )
+
+                SummaryItem(
+                    icon: "🎯",
+                    title: NSLocalizedString("today_summary_sessions", comment: "Sessions today"),
+                    value: "\(record.pomodoros)"
+                )
+
+                SummaryItem(
+                    icon: "⏱️",
+                    title: NSLocalizedString("today_summary_focus", comment: "Focus time today"),
+                    value: String(
+                        format: NSLocalizedString("today_summary_focus_value", comment: "Focus time formatted"),
+                        focusHours,
+                        focusMinutes
+                    )
+                )
+            }
+        }
+        .padding(20)
+        .cardStyle()
+    }
+}
+
+struct SummaryItem: View {
+    let icon: String
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Text(icon)
+                .font(.system(size: 24))
+
+            Text(value)
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundColor(.textPrimary)
+
+            Text(title)
+                .font(.system(size: 11))
+                .foregroundColor(.textSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(12)
+        .background(Color.backgroundCard.opacity(0.8))
+        .cornerRadius(12)
     }
 }
 

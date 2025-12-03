@@ -8,6 +8,9 @@
 import Foundation
 import Combine
 import UIKit
+#if canImport(ActivityKit)
+import ActivityKit
+#endif
 
 enum TimerMode: String, CaseIterable {
     case focus = "Focus Time"
@@ -216,6 +219,10 @@ class TimerViewModel: ObservableObject {
             )
         }
 
+        #if canImport(ActivityKit)
+        startLiveActivity(totalSeconds: totalTime, remaining: timeLeft)
+        #endif
+
         // Start UI update timer
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
@@ -226,6 +233,9 @@ class TimerViewModel: ObservableObject {
 
                 if remaining > 0 {
                     self.timeLeft = remaining
+                    #if canImport(ActivityKit)
+                    self.updateLiveActivity(remaining: remaining)
+                    #endif
                 } else {
                     self.timeLeft = 0
                     self.handleTimerComplete()
@@ -250,6 +260,10 @@ class TimerViewModel: ObservableObject {
         UserDefaults.standard.removeObject(forKey: "timerEndTime")
         UserDefaults.standard.removeObject(forKey: "timerMode")
         UserDefaults.standard.removeObject(forKey: "timerCompletedCycles")
+
+        #if canImport(ActivityKit)
+        endLiveActivity()
+        #endif
     }
 
     private func handleTimerComplete() {
@@ -303,8 +317,105 @@ class TimerViewModel: ObservableObject {
         timeLeft = totalTime
     }
 
+#if canImport(ActivityKit)
+    private func startLiveActivity(totalSeconds: Int, remaining: Int) {
+        guard #available(iOS 16.1, *) else { return }
+        LiveActivityManager.shared.start(
+            title: NSLocalizedString("app_title", comment: "App title"),
+            mode: mode,
+            totalSeconds: totalSeconds,
+            remainingSeconds: remaining
+        )
+    }
+
+    private func updateLiveActivity(remaining: Int) {
+        guard #available(iOS 16.1, *) else { return }
+        LiveActivityManager.shared.update(
+            mode: mode,
+            totalSeconds: totalTime,
+            remainingSeconds: remaining
+        )
+    }
+
+    private func endLiveActivity() {
+        guard #available(iOS 16.1, *) else { return }
+        LiveActivityManager.shared.end()
+    }
+#else
+    private func startLiveActivity(totalSeconds: Int, remaining: Int) {}
+    private func updateLiveActivity(remaining: Int) {}
+    private func endLiveActivity() {}
+#endif
+
     deinit {
         stopTimer()
         NotificationCenter.default.removeObserver(self)
     }
 }
+
+#if canImport(ActivityKit)
+@available(iOS 16.1, *)
+struct TimerActivityAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable {
+        var remainingSeconds: Int
+        var totalSeconds: Int
+        var modeTitle: String
+    }
+
+    var title: String
+}
+
+@available(iOS 16.1, *)
+class LiveActivityManager {
+    static let shared = LiveActivityManager()
+
+    private var activity: Activity<TimerActivityAttributes>?
+
+    func start(title: String, mode: TimerMode, totalSeconds: Int, remainingSeconds: Int) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+
+        // End previous activity if it exists
+        if activity != nil {
+            end()
+        }
+
+        let attributes = TimerActivityAttributes(title: title)
+        let state = TimerActivityAttributes.ContentState(
+            remainingSeconds: remainingSeconds,
+            totalSeconds: totalSeconds,
+            modeTitle: mode.localizedTitle
+        )
+
+        do {
+            activity = try Activity<TimerActivityAttributes>.request(
+                attributes: attributes,
+                contentState: state,
+                pushType: nil
+            )
+        } catch {
+            print("Failed to start live activity: \(error)")
+        }
+    }
+
+    func update(mode: TimerMode, totalSeconds: Int, remainingSeconds: Int) {
+        guard let activity else { return }
+        let state = TimerActivityAttributes.ContentState(
+            remainingSeconds: remainingSeconds,
+            totalSeconds: totalSeconds,
+            modeTitle: mode.localizedTitle
+        )
+
+        Task {
+            await activity.update(using: state)
+        }
+    }
+
+    func end() {
+        guard let activity else { return }
+        Task {
+            await activity.end(dismissalPolicy: .immediate)
+        }
+        self.activity = nil
+    }
+}
+#endif

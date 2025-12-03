@@ -1,5 +1,5 @@
 "app_title" = "🌱 Focus Garden";
-"app_subtitle" = "Выращивайте продуктивность";
+"app_subtitle" = "Улучшайте продуктивность";
 "cycle_number" = "Цикл %d";
 
 "focus_time" = "Фокус";
@@ -76,6 +76,11 @@
 "settings_import_error_title" = "Импорт не удался";
 "settings_import_error" = "Не удалось импортировать файл. Убедитесь, что это экспорт Focus Garden.";
 "settings_timer_duration" = "Длительность таймера";
+"today_summary_title" = "Итоги за сегодня";
+"today_summary_pomodoros" = "Помодоро";
+"today_summary_sessions" = "Сессии";
+"today_summary_focus" = "Фокус-время";
+"today_summary_focus_value" = "%dч %dм";
 "settings_sound" = "Звук";
 "settings_completion_sound" = "Звук завершения";
 "settings_completion_sound_subtitle" = "Воспроизводить звук при завершении таймера";

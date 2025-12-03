@@ -76,6 +76,11 @@
 "settings_import_error_title" = "Import Failed";
 "settings_import_error" = "Could not import the file. Please make sure it is a valid Focus Garden export.";
 "settings_timer_duration" = "Timer Duration";
+"today_summary_title" = "Today's summary";
+"today_summary_pomodoros" = "Pomodoros";
+"today_summary_sessions" = "Sessions";
+"today_summary_focus" = "Focus time";
+"today_summary_focus_value" = "%dh %dm";
 "settings_sound" = "Sound";
 "settings_completion_sound" = "Completion Sound";
 "settings_completion_sound_subtitle" = "Play sound when timer completes";
