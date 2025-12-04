@@ -64,7 +64,7 @@ class StorageManager {
            let language = AppLanguage(rawValue: value) {
             return language
         }
-        return .english
+        return .russian
     }
 
     // MARK: - Theme

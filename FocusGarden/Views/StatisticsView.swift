@@ -43,11 +43,11 @@ struct StatisticsView: View {
                 // Header
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("statistics_title")
+                        Text(LocalizedStringKey("statistics_title"))
                             .font(.system(size: 28, weight: .bold))
                             .foregroundColor(.textPrimary)
 
-                        Text("statistics_subtitle")
+                        Text(LocalizedStringKey("statistics_subtitle"))
                             .font(.system(size: 14))
                             .foregroundColor(.textSecondary)
                     }
@@ -271,7 +271,7 @@ struct ActivityChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("statistics_activity")
+            Text(LocalizedStringKey("statistics_activity"))
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.textPrimary)
 
@@ -358,7 +358,7 @@ struct AchievementsCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("achievements_title")
+            Text(LocalizedStringKey("achievements_title"))
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.textPrimary)
 
@@ -443,7 +443,7 @@ struct ActivityCalendar: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("activity_calendar_title")
+            Text(LocalizedStringKey("activity_calendar_title"))
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.textPrimary)
 
@@ -462,7 +462,7 @@ struct ActivityCalendar: View {
 
             // Legend
             HStack(spacing: 8) {
-                Text("activity_calendar_less")
+                Text(LocalizedStringKey("activity_calendar_less"))
                     .font(.system(size: 10))
                     .foregroundColor(.textTertiary)
 
@@ -472,7 +472,7 @@ struct ActivityCalendar: View {
                         .frame(width: 16, height: 16)
                 }
 
-                Text("activity_calendar_more")
+                Text(LocalizedStringKey("activity_calendar_more"))
                     .font(.system(size: 10))
                     .foregroundColor(.textTertiary)
             }
@@ -505,7 +505,7 @@ struct TodaySummaryView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("today_summary_title")
+            Text(LocalizedStringKey("today_summary_title"))
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.textPrimary)
 

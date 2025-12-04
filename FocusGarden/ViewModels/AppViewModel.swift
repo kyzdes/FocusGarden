@@ -16,6 +16,9 @@ class AppViewModel: ObservableObject {
     @Published var theme: AppTheme
     @Published var iCloudSyncEnabled: Bool
 
+    // Timer ViewModel - lives at app level to persist across navigation
+    var timerViewModel: TimerViewModel!
+
     private let storageManager = StorageManager.shared
     private var cancellables = Set<AnyCancellable>()
     private var cloudObserver: NSObjectProtocol?
@@ -34,6 +37,13 @@ class AppViewModel: ObservableObject {
             progress.todayPomodoros = 0
         }
 
+        // Initialize timer view model after settings are loaded
+        self.timerViewModel = TimerViewModel(
+            settings: settings,
+            onFocusComplete: { [weak self] in self?.completedPomodoro() },
+            onBreakComplete: { [weak self] in self?.completedBreak() }
+        )
+
         setupObservers()
         setupCloudSync()
     }
@@ -43,7 +53,9 @@ class AppViewModel: ObservableObject {
         $settings
             .dropFirst()
             .sink { [weak self] settings in
-                self?.storageManager.saveSettings(settings)
+                guard let self else { return }
+                self.storageManager.saveSettings(settings)
+                self.timerViewModel.updateSettings(settings)
             }
             .store(in: &cancellables)
 

@@ -8,23 +8,8 @@
 import SwiftUI
 
 struct TimerView: View {
-    let settings: TimerSettings
-    let onFocusComplete: () -> Void
-    let onBreakComplete: () -> Void
-
-    @StateObject private var viewModel: TimerViewModel
+    @ObservedObject var viewModel: TimerViewModel
     @Environment(\.colorScheme) private var colorScheme
-
-    init(settings: TimerSettings, onFocusComplete: @escaping () -> Void, onBreakComplete: @escaping () -> Void) {
-        self.settings = settings
-        self.onFocusComplete = onFocusComplete
-        self.onBreakComplete = onBreakComplete
-        _viewModel = StateObject(wrappedValue: TimerViewModel(
-            settings: settings,
-            onFocusComplete: onFocusComplete,
-            onBreakComplete: onBreakComplete
-        ))
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -116,9 +101,6 @@ struct TimerView: View {
             .padding(.bottom, 32)
         }
         .cardStyle()
-        .onChange(of: settings) {
-            viewModel.updateSettings(settings)
-        }
     }
 
     private var modeColor: Color {
@@ -191,9 +173,11 @@ struct ModeButton: View {
 
 #Preview {
     TimerView(
-        settings: .default,
-        onFocusComplete: {},
-        onBreakComplete: {}
+        viewModel: TimerViewModel(
+            settings: .default,
+            onFocusComplete: {},
+            onBreakComplete: {}
+        )
     )
     .padding()
 }

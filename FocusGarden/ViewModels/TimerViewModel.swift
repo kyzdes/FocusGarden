@@ -357,12 +357,22 @@ class TimerViewModel: ObservableObject {
 @available(iOS 16.1, *)
 struct TimerActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
-        var remainingSeconds: Int
-        var totalSeconds: Int
-        var modeTitle: String
+        public var remainingSeconds: Int
+        public var totalSeconds: Int
+        public var modeTitle: String
+
+        public init(remainingSeconds: Int, totalSeconds: Int, modeTitle: String) {
+            self.remainingSeconds = remainingSeconds
+            self.totalSeconds = totalSeconds
+            self.modeTitle = modeTitle
+        }
     }
 
-    var title: String
+    public var title: String
+
+    public init(title: String) {
+        self.title = title
+    }
 }
 
 @available(iOS 16.1, *)

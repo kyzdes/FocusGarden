@@ -77,11 +77,7 @@ struct ContentView: View {
 
     private var leftSection: some View {
         VStack(spacing: 20) {
-            TimerView(
-                settings: appViewModel.settings,
-                onFocusComplete: { appViewModel.completedPomodoro() },
-                onBreakComplete: { appViewModel.completedBreak() }
-            )
+            TimerView(viewModel: appViewModel.timerViewModel)
 
             ProgressTrackerView(progress: appViewModel.progress)
         }
@@ -102,11 +98,11 @@ struct HeaderView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("app_title")
+                Text(LocalizedStringKey("app_title"))
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundColor(.textPrimary)
 
-                Text("app_subtitle")
+                Text(LocalizedStringKey("app_subtitle"))
                     .font(.system(size: 14))
                     .foregroundColor(.textSecondary)
             }

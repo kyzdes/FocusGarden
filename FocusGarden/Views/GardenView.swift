@@ -14,11 +14,11 @@ struct GardenView: View {
         VStack(spacing: 0) {
             // Header
             VStack(alignment: .leading, spacing: 4) {
-                Text("garden_title")
+                Text(LocalizedStringKey("garden_title"))
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.textPrimary)
 
-                Text("garden_subtitle")
+                Text(LocalizedStringKey("garden_subtitle"))
                     .font(.system(size: 13))
                     .foregroundColor(.textSecondary)
             }
@@ -70,11 +70,11 @@ struct GardenView: View {
                         Text("🌱")
                             .font(.system(size: 48))
 
-                        Text("garden_empty_title")
+                        Text(LocalizedStringKey("garden_empty_title"))
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(.textSecondary)
 
-                        Text("garden_empty_subtitle")
+                        Text(LocalizedStringKey("garden_empty_subtitle"))
                             .font(.system(size: 12))
                             .foregroundColor(.textTertiary)
                             .multilineTextAlignment(.center)

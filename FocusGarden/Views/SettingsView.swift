@@ -34,26 +34,6 @@ struct SettingsView: View {
 
                 ScrollView {
                     VStack(spacing: 24) {
-                        // Language Section
-                        VStack(alignment: .leading, spacing: 16) {
-                            HStack {
-                                Image(systemName: "globe")
-                                    .foregroundColor(.focusGreen)
-                                Text("settings_language")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.textPrimary)
-                            }
-
-                            Picker(NSLocalizedString("settings_language_picker", comment: "Language picker"), selection: $language) {
-                                ForEach(AppLanguage.allCases, id: \.self) { language in
-                                    Text(language.displayName).tag(language)
-                                }
-                            }
-                            .pickerStyle(SegmentedPickerStyle())
-                        }
-                        .padding(20)
-                        .cardStyle()
-
                         // iCloud Sync Section
                         VStack(alignment: .leading, spacing: 16) {
                             HStack {
@@ -101,8 +81,19 @@ struct SettingsView: View {
                             }
 
                             Toggle(isOn: Binding(
-                                get: { theme == .dark },
-                                set: { theme = $0 ? .dark : .system }
+                                get: {
+                                    switch theme {
+                                    case .dark:
+                                        return true
+                                    case .light:
+                                        return false
+                                    case .system:
+                                        return false
+                                    }
+                                },
+                                set: { isDark in
+                                    theme = isDark ? .dark : .light
+                                }
                             )) {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text("settings_theme_toggle")
