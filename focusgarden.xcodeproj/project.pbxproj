@@ -476,8 +476,8 @@
 				INFOPLIST_FILE = FocusGardenWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FocusGardenWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
-				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = NO;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -513,8 +513,8 @@
 				INFOPLIST_FILE = FocusGardenWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FocusGardenWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
-				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = NO;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
