@@ -1,0 +1,49 @@
+# Context: FocusGarden (branch/tag: ver-0.8-claude-demo)
+
+## Product snapshot
+- iOS app: Pomodoro timer + workout interval mode. Live Activities/Dynamic Island for timers, local notifications, iCloud KV sync, export/import of progress, ru/en localization, light/dark/system themes.
+- Web demo (Vite/React) lives in `src/`, replicates Pomodoro only; run with `npm i && npm run dev`.
+- Current icon replaced with `focusgarden2*.png` in `FocusGarden/Assets.xcassets/AppIcon.appiconset/`.
+
+## Project layout (main iOS target)
+- Xcode project: `focusgarden.xcodeproj` (schemes: `focusgarden`, `FocusGardenWidget`).
+- App entry: `FocusGarden/FocusGardenApp.swift` → injects `AppViewModel` env object, sets locale/theme, clears delivered notifications on launch.
+- Core state: `FocusGarden/ViewModels/AppViewModel.swift`  
+  - Pomodoro: `TimerSettings`, `Progress`, `TimerViewModel` callbacks update streak/history/animals/trees/clouds, store last completion date.  
+  - Workout: `WorkoutSettings` (seconds), `WorkoutProgress`, `WorkoutTimerViewModel` (exercise/rest intervals), streaks/history/equipment rewards.  
+  - App settings: `AppLanguage`, `AppTheme`, `iCloud` toggle, `AppMode` switch (Pomodoro/Workout).
+  - Storage: `StorageManager.shared` (UserDefaults + NSUbiquitousKeyValueStore).
+- Persistence/infra:  
+  - `StorageManager.swift`: save/load/reset for pomodoro, workout, language, theme, app mode, last dates, iCloud KV helpers.  
+  - `NotificationManager.swift`: local notifications for timers/workouts.  
+  - `Helpers/Extensions.swift`: colors, date helpers, card style.
+- UI:  
+  - `Views/ContentView.swift`: header (mode switch, stats, settings), main sections split by app mode.  
+  - Pomodoro: `TimerView.swift`, `GardenView`, `ProgressTrackerView`.  
+  - Workout: `WorkoutTimerView.swift` (exercise/rest with live progress), `CycleSelectorView.swift` (stepper 1–90 cycles), `WorkoutProgressTrackerView.swift`, `GymView.swift` (visual gym).  
+  - Settings: `Views/SettingsView.swift` with sliders for pomodoro times (minutes), workout times (0–90 sec exercise/rest), sound, theme, iCloud toggle, backup import/export.
+- Live Activities: implemented in `TimerViewModel.swift` (Pomodoro) and `WorkoutTimerViewModel.swift`; widget extension in `FocusGardenWidget/FocusGardenWidget.swift`. Info.plists include NSSupportsLiveActivities.
+
+## Data models
+- Pomodoro: `Models/TimerSettings`, `Progress`, `DailyRecord`, `TimerMode` (focus/short/long break) inside `TimerViewModel`.
+- Workout: `Models/WorkoutSettings` (exercise/rest seconds, sound), `WorkoutProgress` (cycles/streak/history/dumbbells/kettlebells/equipment), `WorkoutRecord`, `WorkoutMode` (exercise/rest), `AppMode` (pomodoro/workout).
+
+## Key behaviors
+- Pomodoro: after focus completion → increment totals, today count, streak (resets on gap), trees per pomodoro, clouds every 2, animals at 3/7/15/25/40; auto-switches to break/long break every 4th cycle. Optional sound on completion. Local/Cloud sync.
+- Workout: exercise/rest auto-advances cycles; on exercise completion increments progress, dumbbells every cycle, kettlebells every 2, equipment milestones (jumprope/mat/barbell/bike/boxing at 5/10/20/35/50). Completion sound optional. Streak by workout days.
+- Background handling: timers save end time/mode/completed cycles to UserDefaults to restore on relaunch; notifications scheduled at end time; Live Activity updates while running.
+
+## Build notes
+- iOS: open `focusgarden.xcodeproj`, scheme `focusgarden`, iOS 15+. If warning about CFBundleVersion mismatch (app vs widget), align versions in Xcode target settings. Set unique bundle ID and team.
+- Web: `npm i && npm run dev` in repo root.
+
+## Documentation state
+- Primary doc: this file + `README.md` (concise overview).  
+- Live Activity quick check: `LIVE_ACTIVITY_READY.md`.  
+- Historical/legacy notes moved to `docs/archive/` (retain for reference, not maintained).
+
+## Recent changes (ver-0.8-claude-demo)
+- Workout cycle selector now stepper with 1–90 cycles (no presets).
+- Workout exercise/rest durations now 0–90 seconds (previously minutes); defaults 60s/30s.
+- Added seconds unit strings to localization.
+- Cleaned docs layout, archived old guides.
