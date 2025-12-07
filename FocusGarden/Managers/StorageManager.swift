@@ -17,6 +17,13 @@ class StorageManager {
     private let languageKey = "focusGardenLanguage"
     private let themeKey = "focusGardenTheme"
     private let iCloudSyncKey = "focusGardenICloudSyncEnabled"
+
+    // Workout keys
+    private let workoutSettingsKey = "focusGardenWorkoutSettings"
+    private let workoutProgressKey = "focusGardenWorkoutProgress"
+    private let lastWorkoutDateKey = "focusGardenLastWorkoutDate"
+    private let appModeKey = "focusGardenAppMode"
+
     private let ubiquitousStore = NSUbiquitousKeyValueStore.default
 
     private init() {}
@@ -120,12 +127,95 @@ class StorageManager {
         return UserDefaults.standard.string(forKey: lastDateKey)
     }
 
+    // MARK: - Workout Settings
+
+    func saveWorkoutSettings(_ settings: WorkoutSettings) {
+        if let encoded = try? JSONEncoder().encode(settings) {
+            UserDefaults.standard.set(encoded, forKey: workoutSettingsKey)
+        }
+    }
+
+    func loadWorkoutSettings() -> WorkoutSettings {
+        guard let data = UserDefaults.standard.data(forKey: workoutSettingsKey),
+              let settings = try? JSONDecoder().decode(WorkoutSettings.self, from: data) else {
+            return .default
+        }
+        return settings
+    }
+
+    // MARK: - Workout Progress
+
+    func saveWorkoutProgress(_ progress: WorkoutProgress) {
+        if let encoded = try? JSONEncoder().encode(progress) {
+            UserDefaults.standard.set(encoded, forKey: workoutProgressKey)
+        }
+    }
+
+    func loadWorkoutProgress() -> WorkoutProgress {
+        guard let data = UserDefaults.standard.data(forKey: workoutProgressKey),
+              let progress = try? JSONDecoder().decode(WorkoutProgress.self, from: data) else {
+            return .empty
+        }
+        return progress
+    }
+
+    // MARK: - App Mode
+
+    func saveAppMode(_ mode: AppMode) {
+        UserDefaults.standard.set(mode.rawValue, forKey: appModeKey)
+    }
+
+    func loadAppMode() -> AppMode {
+        if let value = UserDefaults.standard.string(forKey: appModeKey),
+           let mode = AppMode(rawValue: value) {
+            return mode
+        }
+        return .pomodoro
+    }
+
+    // MARK: - Last Workout Date
+
+    func saveLastWorkoutDate(_ date: String) {
+        UserDefaults.standard.set(date, forKey: lastWorkoutDateKey)
+    }
+
+    func loadLastWorkoutDate() -> String? {
+        return UserDefaults.standard.string(forKey: lastWorkoutDateKey)
+    }
+
+    // MARK: - Workout iCloud Sync
+
+    func saveWorkoutProgressToCloud(_ progress: WorkoutProgress) {
+        guard let encoded = try? JSONEncoder().encode(progress) else { return }
+        ubiquitousStore.set(encoded, forKey: workoutProgressKey)
+        ubiquitousStore.synchronize()
+    }
+
+    func loadWorkoutProgressFromCloud() -> WorkoutProgress? {
+        guard let data = ubiquitousStore.data(forKey: workoutProgressKey) else { return nil }
+        return try? JSONDecoder().decode(WorkoutProgress.self, from: data)
+    }
+
+    func clearCloudWorkoutProgress() {
+        ubiquitousStore.removeObject(forKey: workoutProgressKey)
+        ubiquitousStore.synchronize()
+    }
+
     // MARK: - Reset
 
     func resetAllData() {
+        // Pomodoro data
         UserDefaults.standard.removeObject(forKey: settingsKey)
         UserDefaults.standard.removeObject(forKey: progressKey)
         UserDefaults.standard.removeObject(forKey: lastDateKey)
+
+        // Workout data
+        UserDefaults.standard.removeObject(forKey: workoutSettingsKey)
+        UserDefaults.standard.removeObject(forKey: workoutProgressKey)
+        UserDefaults.standard.removeObject(forKey: lastWorkoutDateKey)
+        UserDefaults.standard.removeObject(forKey: appModeKey)
+
+        // App settings
         UserDefaults.standard.removeObject(forKey: languageKey)
         UserDefaults.standard.removeObject(forKey: themeKey)
         UserDefaults.standard.removeObject(forKey: iCloudSyncKey)

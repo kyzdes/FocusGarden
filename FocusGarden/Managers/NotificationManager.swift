@@ -86,6 +86,57 @@ class NotificationManager {
         }
     }
 
+    // Schedule notification for workout timer completion
+    func scheduleWorkoutNotification(
+        mode: WorkoutMode,
+        fireDate: Date,
+        identifier: String = "workout_timer_completion"
+    ) {
+        // Cancel any existing notifications
+        cancelTimerNotification(identifier: identifier)
+
+        let content = UNMutableNotificationContent()
+
+        switch mode {
+        case .exercise:
+            content.title = NSLocalizedString("notification_exercise_title", comment: "Exercise complete title")
+            content.body = NSLocalizedString("notification_exercise_body", comment: "Exercise complete body")
+        case .rest:
+            content.title = NSLocalizedString("notification_rest_title", comment: "Rest complete title")
+            content.body = NSLocalizedString("notification_rest_body", comment: "Rest complete body")
+        }
+
+        content.sound = .default
+        content.categoryIdentifier = "WORKOUT_COMPLETE"
+
+        // Calculate time interval
+        let timeInterval = fireDate.timeIntervalSinceNow
+
+        guard timeInterval > 0 else {
+            print("Cannot schedule notification in the past")
+            return
+        }
+
+        let trigger = UNTimeIntervalNotificationTrigger(
+            timeInterval: timeInterval,
+            repeats: false
+        )
+
+        let request = UNNotificationRequest(
+            identifier: identifier,
+            content: content,
+            trigger: trigger
+        )
+
+        notificationCenter.add(request) { error in
+            if let error = error {
+                print("Error scheduling workout notification: \(error)")
+            } else {
+                print("Workout notification scheduled for \(fireDate)")
+            }
+        }
+    }
+
     // Cancel timer notification
     func cancelTimerNotification(identifier: String = "timer_completion") {
         notificationCenter.removePendingNotificationRequests(withIdentifiers: [identifier])

@@ -9,24 +9,43 @@ import Foundation
 import Combine
 
 class AppViewModel: ObservableObject {
+    // Pomodoro state
     @Published var settings: TimerSettings
     @Published var progress: Progress
     @Published var lastCompletionDate: String?
+
+    // Workout state
+    @Published var appMode: AppMode
+    @Published var workoutSettings: WorkoutSettings
+    @Published var workoutProgress: WorkoutProgress
+    @Published var lastWorkoutDate: String?
+
+    // App settings
     @Published var language: AppLanguage
     @Published var theme: AppTheme
     @Published var iCloudSyncEnabled: Bool
 
-    // Timer ViewModel - lives at app level to persist across navigation
+    // Timer ViewModels - live at app level to persist across navigation
     var timerViewModel: TimerViewModel!
+    var workoutTimerViewModel: WorkoutTimerViewModel!
 
     private let storageManager = StorageManager.shared
     private var cancellables = Set<AnyCancellable>()
     private var cloudObserver: NSObjectProtocol?
 
     init() {
+        // Load Pomodoro state
         self.settings = storageManager.loadSettings()
         self.progress = storageManager.loadProgress()
         self.lastCompletionDate = storageManager.loadLastDate()
+
+        // Load Workout state
+        self.appMode = storageManager.loadAppMode()
+        self.workoutSettings = storageManager.loadWorkoutSettings()
+        self.workoutProgress = storageManager.loadWorkoutProgress()
+        self.lastWorkoutDate = storageManager.loadLastWorkoutDate()
+
+        // Load App settings
         self.language = storageManager.loadLanguage()
         self.theme = storageManager.loadTheme()
         self.iCloudSyncEnabled = storageManager.loadICloudEnabled()
@@ -36,12 +55,21 @@ class AppViewModel: ObservableObject {
         if lastCompletionDate != today {
             progress.todayPomodoros = 0
         }
+        if lastWorkoutDate != today {
+            workoutProgress.todayCycles = 0
+        }
 
-        // Initialize timer view model after settings are loaded
+        // Initialize timer view models after settings are loaded
         self.timerViewModel = TimerViewModel(
             settings: settings,
             onFocusComplete: { [weak self] in self?.completedPomodoro() },
             onBreakComplete: { [weak self] in self?.completedBreak() }
+        )
+
+        self.workoutTimerViewModel = WorkoutTimerViewModel(
+            settings: workoutSettings,
+            onCycleComplete: { [weak self] in self?.completedWorkoutCycle() },
+            onWorkoutComplete: { [weak self] in self?.completedWorkout() }
         )
 
         setupObservers()
@@ -95,8 +123,39 @@ class AppViewModel: ObservableObject {
                 self.storageManager.saveICloudEnabled(enabled)
                 if enabled {
                     self.storageManager.saveProgressToCloud(self.progress)
+                    self.storageManager.saveWorkoutProgressToCloud(self.workoutProgress)
                     NSUbiquitousKeyValueStore.default.synchronize()
                 }
+            }
+            .store(in: &cancellables)
+
+        // Save workout settings whenever they change
+        $workoutSettings
+            .dropFirst()
+            .sink { [weak self] settings in
+                guard let self else { return }
+                self.storageManager.saveWorkoutSettings(settings)
+                self.workoutTimerViewModel.updateSettings(settings)
+            }
+            .store(in: &cancellables)
+
+        // Save workout progress whenever it changes
+        $workoutProgress
+            .dropFirst()
+            .sink { [weak self] progress in
+                guard let self else { return }
+                self.storageManager.saveWorkoutProgress(progress)
+                if self.iCloudSyncEnabled {
+                    self.storageManager.saveWorkoutProgressToCloud(progress)
+                }
+            }
+            .store(in: &cancellables)
+
+        // Save app mode whenever it changes
+        $appMode
+            .dropFirst()
+            .sink { [weak self] mode in
+                self?.storageManager.saveAppMode(mode)
             }
             .store(in: &cancellables)
     }
@@ -178,15 +237,106 @@ class AppViewModel: ObservableObject {
         progress.completedSessions += 1
     }
 
+    // MARK: - Workout Methods
+
+    func completedWorkoutCycle() {
+        let today = Date().toDateString()
+        let todayISO = Date().toISODateString()
+
+        // Update progress
+        workoutProgress.totalCycles += 1
+        workoutProgress.todayCycles += 1
+
+        // Update history
+        if let index = workoutProgress.history.firstIndex(where: { $0.date == todayISO }) {
+            workoutProgress.history[index].cycles += 1
+            workoutProgress.history[index].exerciseMinutes += workoutSettings.exerciseTime / 60
+        } else {
+            let newRecord = WorkoutRecord(
+                date: todayISO,
+                cycles: 1,
+                exerciseMinutes: workoutSettings.exerciseTime / 60
+            )
+            workoutProgress.history.append(newRecord)
+        }
+
+        // Add dumbbells every cycle
+        workoutProgress.dumbbells += 1
+
+        // Add kettlebells every 2 cycles
+        if workoutProgress.totalCycles % 2 == 0 {
+            workoutProgress.kettlebells += 1
+        }
+
+        // Unlock equipment at milestones
+        unlockEquipment()
+
+        // Play sound if enabled
+        if workoutSettings.soundEnabled {
+            SoundManager.shared.playCompletionSound()
+        }
+    }
+
+    func completedWorkout() {
+        let today = Date().toDateString()
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())?.toDateString()
+
+        workoutProgress.completedWorkouts += 1
+
+        // Update streak - only update if this is the first workout of the day
+        if lastWorkoutDate != today {
+            if lastWorkoutDate == yesterday {
+                // Continue streak
+                workoutProgress.currentStreak += 1
+            } else {
+                // Start new streak
+                workoutProgress.currentStreak = 1
+            }
+        }
+
+        // Save last workout date
+        lastWorkoutDate = today
+        storageManager.saveLastWorkoutDate(today)
+    }
+
+    private func unlockEquipment() {
+        for equipmentType in EquipmentType.allCases {
+            if workoutProgress.totalCycles == equipmentType.milestone &&
+               !workoutProgress.equipment.contains(equipmentType.rawValue) {
+                workoutProgress.equipment.append(equipmentType.rawValue)
+            }
+        }
+    }
+
+    func switchToPomodoro() {
+        appMode = .pomodoro
+    }
+
+    func switchToWorkout() {
+        appMode = .workout
+    }
+
     func resetAllData() {
+        // Reset Pomodoro data
         progress = .empty
         settings = .default
         lastCompletionDate = nil
+
+        // Reset Workout data
+        workoutProgress = .empty
+        workoutSettings = .default
+        lastWorkoutDate = nil
+        appMode = .pomodoro
+
+        // Reset App settings
         language = .english
         theme = .system
         iCloudSyncEnabled = storageManager.loadICloudEnabled()
+
+        // Clear storage
         storageManager.resetAllData()
         storageManager.clearCloudProgress()
+        storageManager.clearCloudWorkoutProgress()
     }
 
     func importProgress(_ newProgress: Progress) {
@@ -201,6 +351,18 @@ class AppViewModel: ObservableObject {
         }
     }
 
+    func importWorkoutProgress(_ newProgress: WorkoutProgress) {
+        workoutProgress = newProgress
+        lastWorkoutDate = newProgress.todayCycles > 0 ? Date().toDateString() : nil
+        storageManager.saveWorkoutProgress(newProgress)
+        if iCloudSyncEnabled {
+            storageManager.saveWorkoutProgressToCloud(newProgress)
+        }
+        if let lastDate = lastWorkoutDate {
+            storageManager.saveLastWorkoutDate(lastDate)
+        }
+    }
+
     private func setupCloudSync() {
         NSUbiquitousKeyValueStore.default.synchronize()
 
@@ -211,9 +373,16 @@ class AppViewModel: ObservableObject {
         ) { [weak self] _ in
             guard let self, self.iCloudSyncEnabled else { return }
             Task { @MainActor in
-                guard let cloudProgress = self.storageManager.loadProgressFromCloud() else { return }
-                if cloudProgress != self.progress {
+                // Sync Pomodoro progress
+                if let cloudProgress = self.storageManager.loadProgressFromCloud(),
+                   cloudProgress != self.progress {
                     self.progress = cloudProgress
+                }
+
+                // Sync Workout progress
+                if let cloudWorkoutProgress = self.storageManager.loadWorkoutProgressFromCloud(),
+                   cloudWorkoutProgress != self.workoutProgress {
+                    self.workoutProgress = cloudWorkoutProgress
                 }
             }
         }

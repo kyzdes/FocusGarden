@@ -121,6 +121,27 @@ extension Color {
         light: UIColor(red: 0.78, green: 0.90, blue: 0.79, alpha: 1),
         dark: UIColor(red: 0.16, green: 0.19, blue: 0.18, alpha: 1)
     )
+
+    // Workout Colors
+    static let exerciseOrange = dynamicColor(
+        light: UIColor(red: 1.0, green: 0.6, blue: 0.2, alpha: 1),
+        dark: UIColor(red: 1.0, green: 0.65, blue: 0.3, alpha: 1)
+    )
+
+    static let exerciseOrangeDark = dynamicColor(
+        light: UIColor(red: 0.95, green: 0.5, blue: 0.1, alpha: 1),
+        dark: UIColor(red: 0.9, green: 0.55, blue: 0.2, alpha: 1)
+    )
+
+    static let restBlue = dynamicColor(
+        light: UIColor(red: 0.4, green: 0.7, blue: 0.95, alpha: 1),
+        dark: UIColor(red: 0.45, green: 0.75, blue: 1.0, alpha: 1)
+    )
+
+    static let restBlueDark = dynamicColor(
+        light: UIColor(red: 0.3, green: 0.6, blue: 0.85, alpha: 1),
+        dark: UIColor(red: 0.35, green: 0.65, blue: 0.9, alpha: 1)
+    )
 }
 
 // MARK: - View Extensions

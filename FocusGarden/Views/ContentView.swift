@@ -35,6 +35,7 @@ struct ContentView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView(
                 settings: $appViewModel.settings,
+                workoutSettings: $appViewModel.workoutSettings,
                 language: $appViewModel.language,
                 theme: $appViewModel.theme,
                 iCloudSyncEnabled: $appViewModel.iCloudSyncEnabled,
@@ -77,22 +78,33 @@ struct ContentView: View {
 
     private var leftSection: some View {
         VStack(spacing: 20) {
-            TimerView(viewModel: appViewModel.timerViewModel)
-
-            ProgressTrackerView(progress: appViewModel.progress)
+            if appViewModel.appMode == .pomodoro {
+                TimerView(viewModel: appViewModel.timerViewModel)
+                ProgressTrackerView(progress: appViewModel.progress)
+            } else {
+                WorkoutTimerView(viewModel: appViewModel.workoutTimerViewModel)
+                WorkoutProgressTrackerView(progress: appViewModel.workoutProgress)
+            }
         }
         .frame(maxWidth: UIDevice.current.userInterfaceIdiom == .pad ? .infinity : nil)
     }
 
     private var rightSection: some View {
-        GardenView(progress: appViewModel.progress)
-            .frame(maxWidth: UIDevice.current.userInterfaceIdiom == .pad ? .infinity : nil)
+        Group {
+            if appViewModel.appMode == .pomodoro {
+                GardenView(progress: appViewModel.progress)
+            } else {
+                GymView(progress: appViewModel.workoutProgress)
+            }
+        }
+        .frame(maxWidth: UIDevice.current.userInterfaceIdiom == .pad ? .infinity : nil)
     }
 }
 
 struct HeaderView: View {
     let onSettingsClick: () -> Void
     let onStatisticsClick: () -> Void
+    @EnvironmentObject var appViewModel: AppViewModel
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -110,6 +122,33 @@ struct HeaderView: View {
             Spacer()
 
             HStack(spacing: 12) {
+                // Mode switcher
+                Menu {
+                    ForEach(AppMode.allCases, id: \.self) { mode in
+                        Button {
+                            if mode == .pomodoro {
+                                appViewModel.switchToPomodoro()
+                            } else {
+                                appViewModel.switchToWorkout()
+                            }
+                        } label: {
+                            HStack {
+                                Text(mode.localizedTitle)
+                                if appViewModel.appMode == mode {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    Image(systemName: appViewModel.appMode == .pomodoro ? "leaf.fill" : "figure.run")
+                        .font(.system(size: 20))
+                        .foregroundColor(.textSecondary)
+                        .frame(width: 44, height: 44)
+                        .background(Color.backgroundCard.opacity(colorScheme == .dark ? 0.7 : 0.8))
+                        .clipShape(Circle())
+                }
+
                 Button(action: onStatisticsClick) {
                     Image(systemName: "chart.bar.fill")
                         .font(.system(size: 20))

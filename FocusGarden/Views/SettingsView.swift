@@ -13,6 +13,7 @@ import UIKit
 
 struct SettingsView: View {
     @Binding var settings: TimerSettings
+    @Binding var workoutSettings: WorkoutSettings
     @Binding var language: AppLanguage
     @Binding var theme: AppTheme
     @Binding var iCloudSyncEnabled: Bool
@@ -175,6 +176,45 @@ struct SettingsView: View {
                                 }
                             }
                             .toggleStyle(SwitchToggleStyle(tint: .focusGreen))
+                        }
+                        .padding(20)
+                        .cardStyle()
+
+                        // Workout Duration Section
+                        VStack(alignment: .leading, spacing: 16) {
+                            HStack {
+                                Image(systemName: "figure.run")
+                                    .foregroundColor(Color.exerciseOrange)
+                                Text("settings_workout_duration")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.textPrimary)
+                            }
+
+                            // Exercise Time
+                            TimerSlider(
+                                title: NSLocalizedString("exercise_time", comment: "Exercise time slider title"),
+                                value: Binding(
+                                    get: { workoutSettings.exerciseTime / 60 },
+                                    set: { workoutSettings.exerciseTime = $0 * 60 }
+                                ),
+                                range: 1...10,
+                                step: 1,
+                                color: Color.exerciseOrange,
+                                unit: NSLocalizedString("minutes_unit", comment: "Minutes unit label")
+                            )
+
+                            // Rest Time
+                            TimerSlider(
+                                title: NSLocalizedString("rest_time", comment: "Rest time slider title"),
+                                value: Binding(
+                                    get: { workoutSettings.restTime / 60 },
+                                    set: { workoutSettings.restTime = $0 * 60 }
+                                ),
+                                range: 1...5,
+                                step: 1,
+                                color: Color.restBlue,
+                                unit: NSLocalizedString("minutes_unit", comment: "Minutes unit label")
+                            )
                         }
                         .padding(20)
                         .cardStyle()
@@ -354,6 +394,7 @@ struct TimerSlider: View {
 #Preview {
     SettingsView(
         settings: .constant(.default),
+        workoutSettings: .constant(.default),
         language: .constant(.english),
         theme: .constant(.system),
         iCloudSyncEnabled: .constant(true),

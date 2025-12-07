@@ -95,3 +95,29 @@
 "notification_short_break_body" = "Ready to get back to work?";
 "notification_long_break_title" = "Long Break Complete! ✨";
 "notification_long_break_body" = "Feeling refreshed? Let's continue!";
+
+// Workout Mode
+"mode_pomodoro" = "Pomodoro";
+"mode_workout" = "Workout";
+"exercise_time" = "Exercise Time";
+"rest_time" = "Rest Time";
+"workout_start" = "Start Workout";
+"workout_ready" = "Ready to start";
+"workout_cycle_progress" = "Cycle %d of %d";
+"cycle_selector_title" = "Select Cycles";
+"cycles_label" = "Cycles";
+"workout_total_workouts" = "Total Workouts";
+"stat_dumbbells" = "Dumbbells";
+"stat_kettlebells" = "Kettlebells";
+"stat_equipment" = "Equipment";
+"gym_title" = "Your Training Gym";
+"gym_subtitle" = "Complete workout cycles to build your gym";
+"gym_empty_title" = "Your gym awaits";
+"gym_empty_subtitle" = "Complete your first workout cycle";
+"settings_workout_duration" = "Workout Duration";
+"notification_exercise_title" = "Exercise Complete! 💪";
+"notification_exercise_body" = "Great work! Time to rest.";
+"notification_rest_title" = "Rest Complete! 🏃";
+"notification_rest_body" = "Ready for the next exercise?";
+"stat_today" = "Today";
+"stat_streak" = "Streak";

@@ -95,3 +95,29 @@
 "notification_short_break_body" = "Готовы вернуться к работе?";
 "notification_long_break_title" = "Длинный перерыв завершён! ✨";
 "notification_long_break_body" = "Отдохнули? Продолжаем!";
+
+// Workout Mode
+"mode_pomodoro" = "Помодоро";
+"mode_workout" = "Тренировки";
+"exercise_time" = "Время упражнения";
+"rest_time" = "Время отдыха";
+"workout_start" = "Начать тренировку";
+"workout_ready" = "Готов к старту";
+"workout_cycle_progress" = "Цикл %d из %d";
+"cycle_selector_title" = "Выберите циклы";
+"cycles_label" = "Циклов";
+"workout_total_workouts" = "Всего тренировок";
+"stat_dumbbells" = "Гантели";
+"stat_kettlebells" = "Гири";
+"stat_equipment" = "Инвентарь";
+"gym_title" = "Ваш тренировочный зал";
+"gym_subtitle" = "Выполняйте циклы тренировок, чтобы построить зал";
+"gym_empty_title" = "Ваш зал ждёт";
+"gym_empty_subtitle" = "Завершите первый цикл тренировки";
+"settings_workout_duration" = "Длительность тренировки";
+"notification_exercise_title" = "Упражнение завершено! 💪";
+"notification_exercise_body" = "Отличная работа! Время отдохнуть.";
+"notification_rest_title" = "Отдых завершён! 🏃";
+"notification_rest_body" = "Готовы к следующему упражнению?";
+"stat_today" = "Сегодня";
+"stat_streak" = "Серия";
