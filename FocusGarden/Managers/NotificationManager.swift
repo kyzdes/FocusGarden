@@ -88,7 +88,7 @@ class NotificationManager {
 
     // Schedule notification for workout timer completion
     func scheduleWorkoutNotification(
-        mode: WorkoutMode,
+        isExercise: Bool,
         fireDate: Date,
         identifier: String = "workout_timer_completion"
     ) {
@@ -97,11 +97,10 @@ class NotificationManager {
 
         let content = UNMutableNotificationContent()
 
-        switch mode {
-        case .exercise:
+        if isExercise {
             content.title = NSLocalizedString("notification_exercise_title", comment: "Exercise complete title")
             content.body = NSLocalizedString("notification_exercise_body", comment: "Exercise complete body")
-        case .rest:
+        } else {
             content.title = NSLocalizedString("notification_rest_title", comment: "Rest complete title")
             content.body = NSLocalizedString("notification_rest_body", comment: "Rest complete body")
         }

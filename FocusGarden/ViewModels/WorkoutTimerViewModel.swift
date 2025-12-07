@@ -195,7 +195,7 @@ class WorkoutTimerViewModel: ObservableObject {
         // Schedule notification
         if let endTime = endTime {
             NotificationManager.shared.scheduleWorkoutNotification(
-                mode: mode,
+                isExercise: mode == .exercise,
                 fireDate: endTime
             )
         }
