@@ -33,7 +33,8 @@ struct CycleSelectorView: View {
 
                 // Stepper for precise cycle selection
                 Stepper(value: $selectedCycles, in: 1...90, step: 1) {
-                    Text("\(selectedCycles) \(NSLocalizedString(\"cycles_label\", comment: \"Cycles label\"))")
+                    let cyclesLabel = NSLocalizedString("cycles_label", comment: "Cycles label")
+                    Text("\(selectedCycles) \(cyclesLabel)")
                         .font(.headline)
                         .foregroundColor(.primary)
                 }
