@@ -393,12 +393,12 @@ struct TimerSlider: View {
 
 #Preview {
     SettingsView(
-        settings: .constant(.default),
-        workoutSettings: .constant(.default),
-        language: .constant(.english),
-        theme: .constant(.system),
-        iCloudSyncEnabled: .constant(true),
-        getProgress: { .empty },
+        settings: Binding.constant(TimerSettings.default),
+        workoutSettings: Binding.constant(WorkoutSettings.default),
+        language: Binding.constant(AppLanguage.english),
+        theme: Binding.constant(AppTheme.system),
+        iCloudSyncEnabled: Binding.constant(true),
+        getProgress: { Progress.empty },
         onImportProgress: { _ in },
         onClose: {}
     )
