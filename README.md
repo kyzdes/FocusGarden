@@ -1,11 +1,25 @@
+# Focus Garden
 
-  # Focus Garden Web App
+Focus Garden — iOS приложение и веб-демо для Pomodoro + тренировочного цикла с живыми активити, локализацией и резервным копированием.
 
-  This is a code bundle for Focus Garden Web App. The original project is available at https://www.figma.com/design/dD7kKHp5cOSF8dBZukJYwk/Focus-Garden-Web-App.
+## Основное
+- Pomodoro: фокус/перерывы, streak, история, сад с деревьями/облаками/животными, локальные/облачные сохранения.
+- Workout режим: интервалы «упражнение/отдых» (0–90 сек), произвольное число циклов, статистика и визуализация зала.
+- Live Activity / Dynamic Island: отображение таймеров (см. `LIVE_ACTIVITY_READY.md`).
+- Локализация: ru/en, темы светлая/тёмная/системная, экспорт/импорт прогресса, iCloud синк.
 
-  ## Running the code
+## Сборка iOS
+1) Открыть `focusgarden.xcodeproj` → схема `focusgarden`.
+2) Выбрать команду разработчика и уникальный Bundle ID (`com.yourname.focusgarden`).
+3) Собрать/запустить на симуляторе или устройстве (iOS 15+). При предупреждении о CFBundleVersion выровнять версии app и widget target.
 
-  Run `npm i` to install the dependencies.
+## Веб-демо
+Код веб-версии лежит в `src/`. Запуск: `npm i` → `npm run dev` (Vite).
 
-  Run `npm run dev` to start the development server.
-  
+## Документация
+- Актуально: `LIVE_ACTIVITY_READY.md` — проверка готовности Live Activity.
+- Архив справочных заметок: `docs/archive/` (старые фиксы/гайды, если нужно поднять историю).
+
+## Что нового
+- Workout таймер с шагом 1 цикл и настройками 0–90 сек для упражнения/отдыха.
+- Новая иконка приложения, обновлённые уведомления для тренировки.
