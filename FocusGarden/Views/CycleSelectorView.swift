@@ -10,8 +10,6 @@ import SwiftUI
 struct CycleSelectorView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCycles: Int = 10
-
-    let availableCycles = [5, 10, 15, 20, 25, 30]
     let onStart: (Int) -> Void
 
     var body: some View {
@@ -33,14 +31,14 @@ struct CycleSelectorView: View {
                 }
                 .padding(.vertical, 20)
 
-                // Picker
-                Picker("", selection: $selectedCycles) {
-                    ForEach(availableCycles, id: \.self) { count in
-                        Text("\(count)").tag(count)
-                    }
+                // Stepper for precise cycle selection
+                Stepper(value: $selectedCycles, in: 1...90, step: 1) {
+                    Text("\(selectedCycles) \(NSLocalizedString(\"cycles_label\", comment: \"Cycles label\"))")
+                        .font(.headline)
+                        .foregroundColor(.primary)
                 }
-                .pickerStyle(.wheel)
-                .frame(height: 150)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Spacer()
 

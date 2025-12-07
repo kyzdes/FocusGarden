@@ -194,26 +194,26 @@ struct SettingsView: View {
                             TimerSlider(
                                 title: NSLocalizedString("exercise_time", comment: "Exercise time slider title"),
                                 value: Binding(
-                                    get: { workoutSettings.exerciseTime / 60 },
-                                    set: { workoutSettings.exerciseTime = $0 * 60 }
+                                    get: { workoutSettings.exerciseTime },
+                                    set: { workoutSettings.exerciseTime = $0 }
                                 ),
-                                range: 1...10,
+                                range: 0...90,
                                 step: 1,
                                 color: Color.exerciseOrange,
-                                unit: NSLocalizedString("minutes_unit", comment: "Minutes unit label")
+                                unit: NSLocalizedString("seconds_unit", comment: "Seconds unit label")
                             )
 
                             // Rest Time
                             TimerSlider(
                                 title: NSLocalizedString("rest_time", comment: "Rest time slider title"),
                                 value: Binding(
-                                    get: { workoutSettings.restTime / 60 },
-                                    set: { workoutSettings.restTime = $0 * 60 }
+                                    get: { workoutSettings.restTime },
+                                    set: { workoutSettings.restTime = $0 }
                                 ),
-                                range: 1...5,
+                                range: 0...90,
                                 step: 1,
                                 color: Color.restBlue,
-                                unit: NSLocalizedString("minutes_unit", comment: "Minutes unit label")
+                                unit: NSLocalizedString("seconds_unit", comment: "Seconds unit label")
                             )
                         }
                         .padding(20)

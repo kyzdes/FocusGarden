@@ -115,6 +115,7 @@
 "gym_empty_title" = "Ваш зал ждёт";
 "gym_empty_subtitle" = "Завершите первый цикл тренировки";
 "settings_workout_duration" = "Длительность тренировки";
+"seconds_unit" = "сек";
 "notification_exercise_title" = "Упражнение завершено! 💪";
 "notification_exercise_body" = "Отличная работа! Время отдохнуть.";
 "notification_rest_title" = "Отдых завершён! 🏃";

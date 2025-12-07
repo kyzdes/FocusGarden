@@ -115,6 +115,7 @@
 "gym_empty_title" = "Your gym awaits";
 "gym_empty_subtitle" = "Complete your first workout cycle";
 "settings_workout_duration" = "Workout Duration";
+"seconds_unit" = "sec";
 "notification_exercise_title" = "Exercise Complete! 💪";
 "notification_exercise_body" = "Great work! Time to rest.";
 "notification_rest_title" = "Rest Complete! 🏃";

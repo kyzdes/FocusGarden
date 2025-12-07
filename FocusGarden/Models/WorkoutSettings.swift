@@ -13,8 +13,8 @@ struct WorkoutSettings: Codable, Equatable {
     var soundEnabled: Bool
 
     static let `default` = WorkoutSettings(
-        exerciseTime: 180, // 3 minutes
-        restTime: 60, // 1 minute
+        exerciseTime: 60, // seconds
+        restTime: 30, // seconds
         soundEnabled: true
     )
 }
