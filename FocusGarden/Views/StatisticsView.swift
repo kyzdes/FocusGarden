@@ -10,8 +10,10 @@ import Charts
 
 struct StatisticsView: View {
     let progress: Progress
+    let workoutProgress: WorkoutProgress
     let onClose: () -> Void
 
+    @State private var selectedMode: AppMode = .pomodoro
     @State private var timeRange: TimeRange = .week
     private var todayRecord: DailyRecord {
         let todayISO = Date().toISODateString()
@@ -67,48 +69,112 @@ struct StatisticsView: View {
                 .padding(.top, 20)
                 .padding(.bottom, 16)
 
-                ScrollView {
-                    VStack(spacing: 20) {
-                        // Today's summary
-                        TodaySummaryView(record: todayRecord)
-                            .padding(.horizontal, 20)
-
-                        // Key Metrics
-                        MetricsGrid(progress: progress)
-
-                        // Chart Section
-                        VStack(spacing: 20) {
-                            // Time range selector
-                            Picker(NSLocalizedString("time_range_picker", comment: "Time range picker"), selection: $timeRange) {
-                                ForEach(TimeRange.allCases, id: \.self) { range in
-                                    Text(range.title).tag(range)
-                                }
-                            }
-                            .pickerStyle(SegmentedPickerStyle())
-
-                            // Activity Chart
-                            ActivityChart(
-                                data: getFilteredData(),
-                                timeRange: timeRange
-                            )
-                        }
-                        .padding(20)
-                        .cardStyle()
-                        .padding(.horizontal, 20)
-
-                        // Achievements
-                        AchievementsCard(progress: progress)
-                            .padding(.horizontal, 20)
-
-                        // Activity Calendar
-                        ActivityCalendar(data: getCalendarData())
-                            .padding(.horizontal, 20)
+                // Mode Switcher
+                Picker("Mode", selection: $selectedMode) {
+                    ForEach(AppMode.allCases, id: \.self) { mode in
+                        Text(mode.localizedTitle).tag(mode)
                     }
-                    .padding(.top, 20)
-                    .padding(.bottom, 24)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.horizontal, 20)
+                .padding(.bottom, 16)
+
+                ScrollView {
+                    if selectedMode == .pomodoro {
+                        pomodoroStatisticsContent
+                    } else {
+                        workoutStatisticsContent
+                    }
                 }
             }
         }
+    }
+
+    private var pomodoroStatisticsContent: some View {
+        VStack(spacing: 20) {
+            // Today's summary
+            TodaySummaryView(record: todayRecord)
+                .padding(.horizontal, 20)
+
+            // Key Metrics
+            MetricsGrid(progress: progress)
+
+            // Chart Section
+            VStack(spacing: 20) {
+                // Time range selector
+                Picker(NSLocalizedString("time_range_picker", comment: "Time range picker"), selection: $timeRange) {
+                    ForEach(TimeRange.allCases, id: \.self) { range in
+                        Text(range.title).tag(range)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+
+                // Activity Chart
+                ActivityChart(
+                    data: getFilteredData(),
+                    timeRange: timeRange
+                )
+            }
+            .padding(20)
+            .cardStyle()
+            .padding(.horizontal, 20)
+
+            // Achievements
+            AchievementsCard(progress: progress)
+                .padding(.horizontal, 20)
+
+            // Activity Calendar
+            ActivityCalendar(data: getCalendarData())
+                .padding(.horizontal, 20)
+        }
+        .padding(.top, 20)
+        .padding(.bottom, 24)
+    }
+
+    private var workoutStatisticsContent: some View {
+        VStack(spacing: 20) {
+            // Today's summary
+            WorkoutTodaySummaryView(record: workoutTodayRecord)
+                .padding(.horizontal, 20)
+
+            // Key Metrics
+            WorkoutMetricsGrid(progress: workoutProgress)
+
+            // Chart Section
+            VStack(spacing: 20) {
+                // Time range selector
+                Picker(NSLocalizedString("time_range_picker", comment: "Time range picker"), selection: $timeRange) {
+                    ForEach(TimeRange.allCases, id: \.self) { range in
+                        Text(range.title).tag(range)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+
+                // Activity Chart
+                WorkoutActivityChart(
+                    data: getWorkoutFilteredData(),
+                    timeRange: timeRange
+                )
+            }
+            .padding(20)
+            .cardStyle()
+            .padding(.horizontal, 20)
+
+            // Achievements
+            WorkoutAchievementsCard(progress: workoutProgress)
+                .padding(.horizontal, 20)
+
+            // Activity Calendar
+            WorkoutActivityCalendar(data: getWorkoutCalendarData())
+                .padding(.horizontal, 20)
+        }
+        .padding(.top, 20)
+        .padding(.bottom, 24)
+    }
+
+    private var workoutTodayRecord: WorkoutRecord {
+        let todayISO = Date().toISODateString()
+        return workoutProgress.history.first(where: { $0.date == todayISO }) ?? WorkoutRecord(id: UUID(), date: todayISO, cycles: 0, exerciseMinutes: 0)
     }
 
     private func getFilteredData() -> [DailyRecord] {
@@ -149,6 +215,51 @@ struct StatisticsView: View {
             data.append(CalendarDay(
                 date: dateStr,
                 count: record?.pomodoros ?? 0
+            ))
+        }
+
+        return data
+    }
+
+    private func getWorkoutFilteredData() -> [WorkoutRecord] {
+        let daysBack: Int
+        switch timeRange {
+        case .week: daysBack = 7
+        case .month: daysBack = 30
+        case .all: daysBack = 365
+        }
+
+        var data: [WorkoutRecord] = []
+        let calendar = Calendar.current
+
+        for i in (0..<daysBack).reversed() {
+            guard let date = calendar.date(byAdding: .day, value: -i, to: Date()) else { continue }
+            let dateStr = date.toISODateString()
+
+            let record = workoutProgress.history.first(where: { $0.date == dateStr })
+            data.append(WorkoutRecord(
+                id: UUID(),
+                date: dateStr,
+                cycles: record?.cycles ?? 0,
+                exerciseMinutes: record?.exerciseMinutes ?? 0
+            ))
+        }
+
+        return data
+    }
+
+    private func getWorkoutCalendarData() -> [WorkoutCalendarDay] {
+        var data: [WorkoutCalendarDay] = []
+        let calendar = Calendar.current
+
+        for i in (0..<90).reversed() {
+            guard let date = calendar.date(byAdding: .day, value: -i, to: Date()) else { continue }
+            let dateStr = date.toISODateString()
+
+            let record = workoutProgress.history.first(where: { $0.date == dateStr })
+            data.append(WorkoutCalendarDay(
+                date: dateStr,
+                count: record?.cycles ?? 0
             ))
         }
 
@@ -578,6 +689,20 @@ struct SummaryItem: View {
                 DailyRecord(date: "2024-01-15", pomodoros: 5, focusMinutes: 125),
                 DailyRecord(date: "2024-01-16", pomodoros: 7, focusMinutes: 175),
                 DailyRecord(date: "2024-01-17", pomodoros: 4, focusMinutes: 100)
+            ]
+        ),
+        workoutProgress: WorkoutProgress(
+            totalCycles: 42,
+            todayCycles: 5,
+            completedWorkouts: 21,
+            currentStreak: 7,
+            dumbbells: 42,
+            kettlebells: 21,
+            equipment: ["jumprope", "mat"],
+            history: [
+                WorkoutRecord(id: UUID(), date: "2024-01-15", cycles: 5, exerciseMinutes: 25),
+                WorkoutRecord(id: UUID(), date: "2024-01-16", cycles: 7, exerciseMinutes: 35),
+                WorkoutRecord(id: UUID(), date: "2024-01-17", cycles: 4, exerciseMinutes: 20)
             ]
         ),
         onClose: {}

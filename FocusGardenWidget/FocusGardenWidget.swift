@@ -17,11 +17,17 @@ struct TimerActivityAttributes: ActivityAttributes {
         public var remainingSeconds: Int
         public var totalSeconds: Int
         public var modeTitle: String
+        public var isWorkoutMode: Bool
+        public var currentCycle: Int?
+        public var totalCycles: Int?
 
-        public init(remainingSeconds: Int, totalSeconds: Int, modeTitle: String) {
+        public init(remainingSeconds: Int, totalSeconds: Int, modeTitle: String, isWorkoutMode: Bool = false, currentCycle: Int? = nil, totalCycles: Int? = nil) {
             self.remainingSeconds = remainingSeconds
             self.totalSeconds = totalSeconds
             self.modeTitle = modeTitle
+            self.isWorkoutMode = isWorkoutMode
+            self.currentCycle = currentCycle
+            self.totalCycles = totalCycles
         }
     }
 
@@ -45,13 +51,23 @@ struct FocusGardenWidget: Widget {
                 // Expanded view
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 4) {
-                        Image(systemName: "timer")
-                            .foregroundColor(.green)
+                        Image(systemName: context.state.isWorkoutMode ? "figure.run" : "timer")
+                            .foregroundColor(context.state.isWorkoutMode ? .orange : .green)
                             .font(.title3)
 
-                        Text(context.state.modeTitle)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(context.state.modeTitle)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+
+                            if context.state.isWorkoutMode,
+                               let current = context.state.currentCycle,
+                               let total = context.state.totalCycles {
+                                Text("Cycle \(current)/\(total)")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                 }
 
@@ -65,7 +81,7 @@ struct FocusGardenWidget: Widget {
                     HStack {
                         ProgressView(value: Double(context.state.totalSeconds - context.state.remainingSeconds),
                                    total: Double(context.state.totalSeconds))
-                            .tint(.green)
+                            .tint(context.state.isWorkoutMode ? .orange : .green)
 
                         Text("\(Int((Double(context.state.totalSeconds - context.state.remainingSeconds) / Double(context.state.totalSeconds)) * 100))%")
                             .font(.caption2)
@@ -75,8 +91,8 @@ struct FocusGardenWidget: Widget {
                 }
             } compactLeading: {
                 // Compact leading (left pill)
-                Image(systemName: "timer")
-                    .foregroundColor(.green)
+                Image(systemName: context.state.isWorkoutMode ? "figure.run" : "timer")
+                    .foregroundColor(context.state.isWorkoutMode ? .orange : .green)
             } compactTrailing: {
                 // Compact trailing (right text)
                 Text(formatTime(context.state.remainingSeconds))
@@ -84,10 +100,10 @@ struct FocusGardenWidget: Widget {
                     .foregroundColor(.primary)
             } minimal: {
                 // Minimal view (single icon when multiple activities)
-                Image(systemName: "timer")
-                    .foregroundColor(.green)
+                Image(systemName: context.state.isWorkoutMode ? "figure.run" : "timer")
+                    .foregroundColor(context.state.isWorkoutMode ? .orange : .green)
             }
-            .keylineTint(.green)
+            .keylineTint(context.state.isWorkoutMode ? .orange : .green)
         }
     }
 
@@ -108,17 +124,27 @@ struct LockScreenLiveActivityView: View {
         VStack(spacing: 12) {
             // Header
             HStack {
-                Image(systemName: "timer")
-                    .foregroundColor(.green)
+                Image(systemName: context.state.isWorkoutMode ? "figure.run" : "timer")
+                    .foregroundColor(context.state.isWorkoutMode ? .orange : .green)
 
                 Text(context.attributes.title)
                     .font(.headline)
 
                 Spacer()
 
-                Text(context.state.modeTitle)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(context.state.modeTitle)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+
+                    if context.state.isWorkoutMode,
+                       let current = context.state.currentCycle,
+                       let total = context.state.totalCycles {
+                        Text("Cycle \(current)/\(total)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
 
             // Time and Progress
@@ -135,7 +161,7 @@ struct LockScreenLiveActivityView: View {
 
                     ProgressView(value: Double(context.state.totalSeconds - context.state.remainingSeconds),
                                total: Double(context.state.totalSeconds))
-                        .tint(.green)
+                        .tint(context.state.isWorkoutMode ? .orange : .green)
                         .frame(width: 80)
                 }
             }

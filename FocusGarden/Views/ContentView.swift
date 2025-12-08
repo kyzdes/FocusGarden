@@ -26,6 +26,7 @@ struct ContentView: View {
             if showStatistics {
                 StatisticsView(
                     progress: appViewModel.progress,
+                    workoutProgress: appViewModel.workoutProgress,
                     onClose: { showStatistics = false }
                 )
             } else {
@@ -78,6 +79,15 @@ struct ContentView: View {
 
     private var leftSection: some View {
         VStack(spacing: 20) {
+            // Mode Switcher
+            Picker("Mode", selection: $appViewModel.appMode) {
+                ForEach(AppMode.allCases, id: \.self) { mode in
+                    Text(mode.localizedTitle).tag(mode)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal, 4)
+
             if appViewModel.appMode == .pomodoro {
                 TimerView(viewModel: appViewModel.timerViewModel)
                 ProgressTrackerView(progress: appViewModel.progress)
@@ -122,33 +132,6 @@ struct HeaderView: View {
             Spacer()
 
             HStack(spacing: 12) {
-                // Mode switcher
-                Menu {
-                    ForEach(AppMode.allCases, id: \.self) { mode in
-                        Button {
-                            if mode == .pomodoro {
-                                appViewModel.switchToPomodoro()
-                            } else {
-                                appViewModel.switchToWorkout()
-                            }
-                        } label: {
-                            HStack {
-                                Text(mode.localizedTitle)
-                                if appViewModel.appMode == mode {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
-                    }
-                } label: {
-                    Image(systemName: appViewModel.appMode == .pomodoro ? "leaf.fill" : "figure.run")
-                        .font(.system(size: 20))
-                        .foregroundColor(.textSecondary)
-                        .frame(width: 44, height: 44)
-                        .background(Color.backgroundCard.opacity(colorScheme == .dark ? 0.7 : 0.8))
-                        .clipShape(Circle())
-                }
-
                 Button(action: onStatisticsClick) {
                     Image(systemName: "chart.bar.fill")
                         .font(.system(size: 20))

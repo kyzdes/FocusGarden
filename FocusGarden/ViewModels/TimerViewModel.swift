@@ -55,7 +55,7 @@ class TimerViewModel: ObservableObject {
     var onFocusComplete: () -> Void
     var onBreakComplete: () -> Void
 
-    private var timer: Timer?
+    private var timerSource: DispatchSourceTimer?
     private var endTime: Date?
     private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
 
@@ -110,7 +110,9 @@ class TimerViewModel: ObservableObject {
             }
 
             // Restart the UI update timer
-            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            timerSource = DispatchSource.makeTimerSource(queue: .main)
+            timerSource?.schedule(deadline: .now(), repeating: 1.0)
+            timerSource?.setEventHandler { [weak self] in
                 guard let self = self else { return }
 
                 if let endTime = self.endTime {
@@ -125,7 +127,7 @@ class TimerViewModel: ObservableObject {
                     }
                 }
             }
-            RunLoop.current.add(timer!, forMode: .common)
+            timerSource?.resume()
         } else {
             // Timer expired while app was closed - clean up
             UserDefaults.standard.removeObject(forKey: "timerEndTime")
@@ -360,11 +362,17 @@ struct TimerActivityAttributes: ActivityAttributes {
         public var remainingSeconds: Int
         public var totalSeconds: Int
         public var modeTitle: String
+        public var isWorkoutMode: Bool
+        public var currentCycle: Int?
+        public var totalCycles: Int?
 
-        public init(remainingSeconds: Int, totalSeconds: Int, modeTitle: String) {
+        public init(remainingSeconds: Int, totalSeconds: Int, modeTitle: String, isWorkoutMode: Bool = false, currentCycle: Int? = nil, totalCycles: Int? = nil) {
             self.remainingSeconds = remainingSeconds
             self.totalSeconds = totalSeconds
             self.modeTitle = modeTitle
+            self.isWorkoutMode = isWorkoutMode
+            self.currentCycle = currentCycle
+            self.totalCycles = totalCycles
         }
     }
 

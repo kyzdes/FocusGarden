@@ -97,8 +97,8 @@
 "notification_long_break_body" = "Отдохнули? Продолжаем!";
 
 // Workout Mode
-"mode_pomodoro" = "Помодоро";
-"mode_workout" = "Тренировки";
+"mode_pomodoro" = "Концентрация";
+"mode_workout" = "Тренировка";
 "exercise_time" = "Время упражнения";
 "rest_time" = "Время отдыха";
 "workout_start" = "Начать тренировку";

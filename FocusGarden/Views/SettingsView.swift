@@ -71,6 +71,26 @@ struct SettingsView: View {
                         .padding(20)
                         .cardStyle()
 
+                        // Language Section
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Image(systemName: "globe")
+                                    .foregroundColor(.focusGreen)
+                                Text("settings_language")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.textPrimary)
+                            }
+
+                            Picker("Language", selection: $language) {
+                                ForEach(AppLanguage.allCases, id: \.self) { lang in
+                                    Text(lang.displayName).tag(lang)
+                                }
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                        }
+                        .padding(20)
+                        .cardStyle()
+
                         // Theme Section
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
@@ -198,7 +218,7 @@ struct SettingsView: View {
                                     set: { workoutSettings.exerciseTime = $0 }
                                 ),
                                 range: 0...90,
-                                step: 1,
+                                step: 5,
                                 color: Color.exerciseOrange,
                                 unit: NSLocalizedString("seconds_unit", comment: "Seconds unit label")
                             )
@@ -211,7 +231,7 @@ struct SettingsView: View {
                                     set: { workoutSettings.restTime = $0 }
                                 ),
                                 range: 0...90,
-                                step: 1,
+                                step: 5,
                                 color: Color.restBlue,
                                 unit: NSLocalizedString("seconds_unit", comment: "Seconds unit label")
                             )

@@ -110,23 +110,19 @@ struct WorkoutTimerView: View {
                 Button {
                     showCycleSelector = true
                 } label: {
-                    HStack {
-                        Image(systemName: "play.fill")
-                        Text(NSLocalizedString("workout_start", comment: "Start Workout"))
-                            .fontWeight(.semibold)
-                    }
-                    .font(.system(size: 18))
-                    .foregroundColor(.white)
-                    .frame(width: 200, height: 64)
-                    .background(
-                        LinearGradient(
-                            gradient: Gradient(colors: [modeColor, modeColorDark]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                    Image(systemName: "play.fill")
+                        .font(.system(size: 28))
+                        .foregroundColor(.white)
+                        .frame(width: 64, height: 64)
+                        .background(
+                            LinearGradient(
+                                gradient: Gradient(colors: [modeColor, modeColorDark]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
                         )
-                    )
-                    .clipShape(Capsule())
-                    .shadow(color: modeColor.opacity(0.4), radius: 8, x: 0, y: 4)
+                        .clipShape(Circle())
+                        .shadow(color: modeColor.opacity(0.4), radius: 8, x: 0, y: 4)
                 }
             }
 

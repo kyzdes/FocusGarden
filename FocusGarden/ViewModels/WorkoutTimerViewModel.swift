@@ -379,7 +379,10 @@ class WorkoutLiveActivityManager {
         let state = TimerActivityAttributes.ContentState(
             remainingSeconds: remainingSeconds,
             totalSeconds: totalSeconds,
-            modeTitle: mode.localizedTitle
+            modeTitle: mode.localizedTitle,
+            isWorkoutMode: true,
+            currentCycle: currentCycle,
+            totalCycles: totalCycles
         )
 
         do {
@@ -402,7 +405,10 @@ class WorkoutLiveActivityManager {
         let state = TimerActivityAttributes.ContentState(
             remainingSeconds: remainingSeconds,
             totalSeconds: totalSeconds,
-            modeTitle: mode.localizedTitle
+            modeTitle: mode.localizedTitle,
+            isWorkoutMode: true,
+            currentCycle: currentCycle,
+            totalCycles: totalCycles
         )
 
         Task {
