@@ -12,16 +12,26 @@ struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var showSettings = false
     @State private var showStatistics = false
+    @StateObject private var orientationManager = OrientationManager()
+
+    private var shouldUseOLEDMode: Bool {
+        orientationManager.isLandscape &&
+        UIDevice.current.userInterfaceIdiom == .phone
+    }
 
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                gradient: backgroundGradient,
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            // Background - pure black for OLED in landscape, gradient in portrait
+            if shouldUseOLEDMode {
+                Color.black.ignoresSafeArea()
+            } else {
+                LinearGradient(
+                    gradient: backgroundGradient,
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+            }
 
             if showStatistics {
                 StatisticsView(
@@ -29,6 +39,8 @@ struct ContentView: View {
                     workoutProgress: appViewModel.workoutProgress,
                     onClose: { showStatistics = false }
                 )
+            } else if shouldUseOLEDMode {
+                landscapeOLEDContent
             } else {
                 mainContent
             }
@@ -108,6 +120,16 @@ struct ContentView: View {
             }
         }
         .frame(maxWidth: UIDevice.current.userInterfaceIdiom == .pad ? .infinity : nil)
+    }
+
+    private var landscapeOLEDContent: some View {
+        Group {
+            if appViewModel.appMode == .pomodoro {
+                LandscapePomodoroTimerView(viewModel: appViewModel.timerViewModel)
+            } else {
+                LandscapeWorkoutTimerView(viewModel: appViewModel.workoutTimerViewModel)
+            }
+        }
     }
 }
 

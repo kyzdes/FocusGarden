@@ -142,6 +142,19 @@ extension Color {
         light: UIColor(red: 0.3, green: 0.6, blue: 0.85, alpha: 1),
         dark: UIColor(red: 0.35, green: 0.65, blue: 0.9, alpha: 1)
     )
+
+    // OLED-specific colors
+    static let oledBlack = Color(red: 0, green: 0, blue: 0)
+
+    static let textPrimaryDim = dynamicColor(
+        light: UIColor(red: 0.18, green: 0.22, blue: 0.28, alpha: 0.85),
+        dark: UIColor(red: 0.92, green: 0.94, blue: 0.97, alpha: 0.85)
+    )
+
+    static let textSecondaryDim = dynamicColor(
+        light: UIColor(red: 0.42, green: 0.45, blue: 0.50, alpha: 0.6),
+        dark: UIColor(red: 0.76, green: 0.79, blue: 0.84, alpha: 0.6)
+    )
 }
 
 // MARK: - View Extensions
