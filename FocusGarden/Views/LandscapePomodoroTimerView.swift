@@ -12,9 +12,9 @@ struct LandscapePomodoroTimerView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        HStack(spacing: 24) {
+        HStack(spacing: 40) {
             // Left: Mode selector (vertical)
-            VStack(spacing: 12) {
+            VStack(spacing: 16) {
                 ForEach(TimerMode.allCases, id: \.self) { mode in
                     LandscapeModeButton(
                         mode: mode,
@@ -25,30 +25,30 @@ struct LandscapePomodoroTimerView: View {
                     }
                 }
             }
-            .frame(width: 140)
+            .frame(width: 180)
 
             // Center: Timer circle + cycle count
-            VStack(spacing: 16) {
+            VStack(spacing: 20) {
                 ZStack {
                     // Background circle
                     Circle()
-                        .stroke(Color.gray.opacity(colorScheme == .dark ? 0.25 : 0.1), lineWidth: 10)
-                        .frame(width: 200, height: 200)
+                        .stroke(Color.gray.opacity(colorScheme == .dark ? 0.25 : 0.1), lineWidth: 14)
+                        .frame(width: 260, height: 260)
 
                     // Progress circle
                     Circle()
                         .trim(from: 0, to: viewModel.progress)
                         .stroke(
                             modeColor,
-                            style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                            style: StrokeStyle(lineWidth: 14, lineCap: .round)
                         )
-                        .frame(width: 200, height: 200)
+                        .frame(width: 260, height: 260)
                         .rotationEffect(.degrees(-90))
                         .animation(.linear(duration: 0.5), value: viewModel.progress)
 
                     // Time display
                     Text(viewModel.formatTime(viewModel.timeLeft))
-                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .font(.system(size: 64, weight: .bold, design: .rounded))
                         .foregroundColor(.textPrimary)
                         .monospacedDigit()
                 }
@@ -58,18 +58,18 @@ struct LandscapePomodoroTimerView: View {
                     NSLocalizedString("cycle_number", comment: "Current cycle number"),
                     viewModel.completedCycles + 1
                 ))
-                    .font(.system(size: 14))
+                    .font(.system(size: 16))
                     .foregroundColor(.textSecondary.opacity(0.7))
             }
 
             // Right: Controls (vertical)
-            VStack(spacing: 16) {
+            VStack(spacing: 20) {
                 // Play/Pause button
                 Button(action: { viewModel.toggleTimer() }) {
                     Image(systemName: viewModel.isRunning ? "pause.fill" : "play.fill")
-                        .font(.system(size: 28))
+                        .font(.system(size: 32))
                         .foregroundColor(.white)
-                        .frame(width: 64, height: 64)
+                        .frame(width: 80, height: 80)
                         .background(
                             LinearGradient(
                                 gradient: Gradient(colors: viewModel.isRunning
@@ -81,21 +81,21 @@ struct LandscapePomodoroTimerView: View {
                             )
                         )
                         .clipShape(Circle())
-                        .shadow(color: modeColor.opacity(0.3), radius: 6, x: 0, y: 3)
+                        .shadow(color: modeColor.opacity(0.3), radius: 8, x: 0, y: 4)
                 }
                 .animation(.spring(response: 0.3, dampingFraction: 0.6), value: viewModel.isRunning)
 
                 // Reset button
                 Button(action: { viewModel.resetTimer() }) {
                     Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 24))
+                        .font(.system(size: 28))
                         .foregroundColor(.textSecondary)
-                        .frame(width: 64, height: 64)
+                        .frame(width: 80, height: 80)
                         .background(Color.gray.opacity(0.15))
                         .clipShape(Circle())
                 }
             }
-            .frame(width: 140)
+            .frame(width: 180)
         }
         .padding(.horizontal, 40)
     }
@@ -132,10 +132,10 @@ struct LandscapeModeButton: View {
     var body: some View {
         Button(action: action) {
             Text(mode.localizedTitle)
-                .font(.system(size: 11, weight: isSelected ? .semibold : .regular))
+                .font(.system(size: 14, weight: isSelected ? .semibold : .regular))
                 .foregroundColor(isSelected ? .textPrimary : .textSecondary.opacity(0.7))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
                 .frame(maxWidth: .infinity)
                 .background(
                     isSelected
@@ -150,7 +150,7 @@ struct LandscapeModeButton: View {
                             endPoint: .bottomTrailing
                         )
                 )
-                .cornerRadius(10)
+                .cornerRadius(12)
         }
         .disabled(isDisabled)
         .opacity(isDisabled ? 0.5 : 1.0)
