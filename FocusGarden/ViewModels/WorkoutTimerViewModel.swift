@@ -24,7 +24,7 @@ class WorkoutTimerViewModel: ObservableObject {
     var onCycleComplete: () -> Void
     var onWorkoutComplete: () -> Void
 
-    private var timer: Timer?
+    private var timerSource: DispatchSourceTimer?
     private var endTime: Date?
     private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
 
@@ -80,7 +80,9 @@ class WorkoutTimerViewModel: ObservableObject {
             }
 
             // Restart the UI update timer
-            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            timerSource = DispatchSource.makeTimerSource(queue: .main)
+            timerSource?.schedule(deadline: .now(), repeating: 1.0)
+            timerSource?.setEventHandler { [weak self] in
                 guard let self = self else { return }
 
                 if let endTime = self.endTime {
@@ -95,7 +97,7 @@ class WorkoutTimerViewModel: ObservableObject {
                     }
                 }
             }
-            RunLoop.current.add(timer!, forMode: .common)
+            timerSource?.resume()
         } else {
             // Timer expired while app was closed - clean up
             clearSavedState()
@@ -205,7 +207,9 @@ class WorkoutTimerViewModel: ObservableObject {
         #endif
 
         // Start UI update timer
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        timerSource = DispatchSource.makeTimerSource(queue: .main)
+        timerSource?.schedule(deadline: .now(), repeating: 1.0)
+        timerSource?.setEventHandler { [weak self] in
             guard let self = self else { return }
 
             if let endTime = self.endTime {
@@ -223,14 +227,12 @@ class WorkoutTimerViewModel: ObservableObject {
                 }
             }
         }
-
-        // Keep timer running in background
-        RunLoop.current.add(timer!, forMode: .common)
+        timerSource?.resume()
     }
 
     private func pauseTimer() {
-        timer?.invalidate()
-        timer = nil
+        timerSource?.cancel()
+        timerSource = nil
         endTime = nil
 
         // Cancel scheduled notification
@@ -242,8 +244,8 @@ class WorkoutTimerViewModel: ObservableObject {
     }
 
     private func stopTimer() {
-        timer?.invalidate()
-        timer = nil
+        timerSource?.cancel()
+        timerSource = nil
         isRunning = false
         endTime = nil
 
@@ -388,7 +390,7 @@ class WorkoutLiveActivityManager {
         do {
             let content = ActivityContent(
                 state: state,
-                staleDate: nil
+                staleDate: Date().addingTimeInterval(5)
             )
             activity = try Activity<TimerActivityAttributes>.request(
                 attributes: attributes,
@@ -411,12 +413,16 @@ class WorkoutLiveActivityManager {
             totalCycles: totalCycles
         )
 
-        Task {
-            let content = ActivityContent(
-                state: state,
-                staleDate: nil
-            )
-            await activity.update(content)
+        ProcessInfo.processInfo.performExpiringActivity(withReason: "Workout Timer Update") { expired in
+            guard !expired else { return }
+
+            Task {
+                let content = ActivityContent(
+                    state: state,
+                    staleDate: Date().addingTimeInterval(5)
+                )
+                await activity.update(content)
+            }
         }
     }
 
@@ -425,7 +431,7 @@ class WorkoutLiveActivityManager {
         Task {
             let content = ActivityContent(
                 state: activity.content.state,
-                staleDate: nil
+                staleDate: Date().addingTimeInterval(60)
             )
             await activity.end(content, dismissalPolicy: .immediate)
         }

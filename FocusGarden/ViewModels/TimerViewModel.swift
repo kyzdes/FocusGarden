@@ -226,7 +226,9 @@ class TimerViewModel: ObservableObject {
         #endif
 
         // Start UI update timer
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        timerSource = DispatchSource.makeTimerSource(queue: .main)
+        timerSource?.schedule(deadline: .now(), repeating: 1.0)
+        timerSource?.setEventHandler { [weak self] in
             guard let self = self else { return }
 
             if let endTime = self.endTime {
@@ -244,14 +246,12 @@ class TimerViewModel: ObservableObject {
                 }
             }
         }
-
-        // Keep timer running in background
-        RunLoop.current.add(timer!, forMode: .common)
+        timerSource?.resume()
     }
 
     private func stopTimer() {
-        timer?.invalidate()
-        timer = nil
+        timerSource?.cancel()
+        timerSource = nil
         isRunning = false
         endTime = nil
 
@@ -407,7 +407,7 @@ class LiveActivityManager {
         do {
             let content = ActivityContent(
                 state: state,
-                staleDate: nil
+                staleDate: Date().addingTimeInterval(5)
             )
             activity = try Activity<TimerActivityAttributes>.request(
                 attributes: attributes,
@@ -427,12 +427,16 @@ class LiveActivityManager {
             modeTitle: mode.localizedTitle
         )
 
-        Task {
-            let content = ActivityContent(
-                state: state,
-                staleDate: nil
-            )
-            await activity.update(content)
+        ProcessInfo.processInfo.performExpiringActivity(withReason: "Timer Update") { expired in
+            guard !expired else { return }
+
+            Task {
+                let content = ActivityContent(
+                    state: state,
+                    staleDate: Date().addingTimeInterval(5)
+                )
+                await activity.update(content)
+            }
         }
     }
 
@@ -441,7 +445,7 @@ class LiveActivityManager {
         Task {
             let content = ActivityContent(
                 state: activity.content.state,
-                staleDate: nil
+                staleDate: Date().addingTimeInterval(60)
             )
             await activity.end(content, dismissalPolicy: .immediate)
         }
