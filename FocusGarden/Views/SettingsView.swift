@@ -217,7 +217,7 @@ struct SettingsView: View {
                                     get: { workoutSettings.exerciseTime },
                                     set: { workoutSettings.exerciseTime = $0 }
                                 ),
-                                range: 0...90,
+                                range: 5...90,
                                 step: 5,
                                 color: Color.exerciseOrange,
                                 unit: NSLocalizedString("seconds_unit", comment: "Seconds unit label")
@@ -230,7 +230,7 @@ struct SettingsView: View {
                                     get: { workoutSettings.restTime },
                                     set: { workoutSettings.restTime = $0 }
                                 ),
-                                range: 0...90,
+                                range: 5...90,
                                 step: 5,
                                 color: Color.restBlue,
                                 unit: NSLocalizedString("seconds_unit", comment: "Seconds unit label")
