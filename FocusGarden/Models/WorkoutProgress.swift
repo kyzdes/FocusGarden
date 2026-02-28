@@ -17,17 +17,6 @@ struct WorkoutProgress: Codable, Equatable {
     var equipment: [String] // milestone rewards
     var history: [WorkoutRecord]
 
-    enum CodingKeys: String, CodingKey {
-        case totalCycles
-        case todayCycles
-        case completedWorkouts
-        case currentStreak
-        case dumbbells
-        case kettlebells
-        case equipment
-        case history
-    }
-
     init(totalCycles: Int, todayCycles: Int, completedWorkouts: Int, currentStreak: Int,
          dumbbells: Int, kettlebells: Int, equipment: [String], history: [WorkoutRecord]) {
         self.totalCycles = totalCycles

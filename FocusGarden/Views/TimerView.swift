@@ -39,7 +39,7 @@ struct TimerView: View {
                 Circle()
                     .trim(from: 0, to: viewModel.progress)
                     .stroke(
-                        modeColor,
+                        viewModel.mode.modeColor,
                         style: StrokeStyle(lineWidth: 12, lineCap: .round)
                     )
                     .frame(width: 280, height: 280)
@@ -75,16 +75,15 @@ struct TimerView: View {
                             LinearGradient(
                                 gradient: Gradient(colors: viewModel.isRunning
                                     ? [Color.red.opacity(0.8), Color.red]
-                                    : [modeColor, modeColorDark]
+                                    : [viewModel.mode.modeColor, viewModel.mode.modeColorDark]
                                 ),
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                         )
                         .clipShape(Circle())
-                        .shadow(color: modeColor.opacity(0.4), radius: 8, x: 0, y: 4)
+                        .shadow(color: viewModel.mode.modeColor.opacity(0.4), radius: 8, x: 0, y: 4)
                 }
-                .scaleEffect(viewModel.isRunning ? 1.0 : 1.0)
                 .animation(.spring(response: 0.3, dampingFraction: 0.6), value: viewModel.isRunning)
 
                 // Reset button
@@ -102,28 +101,6 @@ struct TimerView: View {
         }
         .cardStyle()
     }
-
-    private var modeColor: Color {
-        switch viewModel.mode {
-        case .focus:
-            return .focusGreen
-        case .shortBreak:
-            return .breakBlue
-        case .longBreak:
-            return .longBreakPurple
-        }
-    }
-
-    private var modeColorDark: Color {
-        switch viewModel.mode {
-        case .focus:
-            return .focusGreenDark
-        case .shortBreak:
-            return .breakBlueDark
-        case .longBreak:
-            return .longBreakPurpleDark
-        }
-    }
 }
 
 struct ModeButton: View {
@@ -140,34 +117,10 @@ struct ModeButton: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity)
-                .background(
-                    isSelected
-                        ? LinearGradient(
-                            gradient: Gradient(colors: [modeColor.opacity(0.15), modeColor.opacity(0.05)]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                        : LinearGradient(
-                            gradient: Gradient(colors: [Color.clear, Color.clear]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                )
-                .cornerRadius(12)
+                .modeSelectionBackground(isSelected: isSelected, color: mode.modeColor)
         }
         .disabled(isDisabled)
         .opacity(isDisabled ? 0.5 : 1.0)
-    }
-
-    private var modeColor: Color {
-        switch mode {
-        case .focus:
-            return .focusGreen
-        case .shortBreak:
-            return .breakBlue
-        case .longBreak:
-            return .longBreakPurple
-        }
     }
 }
 

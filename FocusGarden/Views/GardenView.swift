@@ -252,14 +252,7 @@ struct AnimalsLayer: View {
     }
 
     private func animalEmoji(_ animal: String) -> String {
-        switch animal {
-        case "butterfly": return "🦋"
-        case "bird": return "🐦"
-        case "rabbit": return "🐰"
-        case "deer": return "🦌"
-        case "fox": return "🦊"
-        default: return "🐛"
-        }
+        AnimalType(rawValue: animal)?.emoji ?? "🐛"
     }
 }
 

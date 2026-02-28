@@ -8,33 +8,47 @@
 import SwiftUI
 import UIKit
 
+// MARK: - Date Formatters (cached)
+
+private enum DateFormatters {
+    static let medium: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        return f
+    }()
+
+    static let iso: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        return f
+    }()
+
+    static let short: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "MMM d"
+        return f
+    }()
+}
+
 // MARK: - Date Extensions
 
 extension Date {
     func toDateString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: self)
+        DateFormatters.medium.string(from: self)
     }
 
     func toISODateString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: self)
+        DateFormatters.iso.string(from: self)
     }
 
     func toShortDateString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
-        return formatter.string(from: self)
+        DateFormatters.short.string(from: self)
     }
 }
 
 extension String {
     func toDate() -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.date(from: self)
+        DateFormatters.iso.date(from: self)
     }
 }
 
@@ -157,6 +171,54 @@ extension Color {
     )
 }
 
+// MARK: - TimerMode Colors
+
+extension TimerMode {
+    var modeColor: Color {
+        switch self {
+        case .focus: return .focusGreen
+        case .shortBreak: return .breakBlue
+        case .longBreak: return .longBreakPurple
+        }
+    }
+
+    var modeColorDark: Color {
+        switch self {
+        case .focus: return .focusGreenDark
+        case .shortBreak: return .breakBlueDark
+        case .longBreak: return .longBreakPurpleDark
+        }
+    }
+}
+
+// MARK: - WorkoutMode Colors
+
+extension WorkoutMode {
+    var modeColor: Color {
+        switch self {
+        case .exercise: return .exerciseOrange
+        case .rest: return .restBlue
+        }
+    }
+
+    var modeColorDark: Color {
+        switch self {
+        case .exercise: return .exerciseOrangeDark
+        case .rest: return .restBlueDark
+        }
+    }
+}
+
+// MARK: - Time Formatting
+
+extension Int {
+    var formattedTime: String {
+        let minutes = self / 60
+        let secs = self % 60
+        return String(format: "%02d:%02d", minutes, secs)
+    }
+}
+
 // MARK: - View Extensions
 
 private struct CardStyle: ViewModifier {
@@ -171,7 +233,41 @@ private struct CardStyle: ViewModifier {
     }
 }
 
+private struct ModeSelectionBackground: ViewModifier {
+    let isSelected: Bool
+    let color: Color
+    let selectedOpacity: (start: Double, end: Double)
+
+    init(isSelected: Bool, color: Color, selectedOpacity: (Double, Double) = (0.15, 0.05)) {
+        self.isSelected = isSelected
+        self.color = color
+        self.selectedOpacity = selectedOpacity
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                isSelected
+                    ? LinearGradient(
+                        gradient: Gradient(colors: [color.opacity(selectedOpacity.start), color.opacity(selectedOpacity.end)]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    : LinearGradient(
+                        gradient: Gradient(colors: [Color.clear, Color.clear]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+            )
+            .cornerRadius(12)
+    }
+}
+
 extension View {
+    func modeSelectionBackground(isSelected: Bool, color: Color, selectedOpacity: (Double, Double) = (0.15, 0.05)) -> some View {
+        modifier(ModeSelectionBackground(isSelected: isSelected, color: color, selectedOpacity: selectedOpacity))
+    }
+
     func cardStyle() -> some View {
         modifier(CardStyle())
     }

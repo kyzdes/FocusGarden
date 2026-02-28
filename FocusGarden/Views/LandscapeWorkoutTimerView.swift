@@ -37,7 +37,7 @@ struct LandscapeWorkoutTimerView: View {
                     Circle()
                         .trim(from: 0, to: viewModel.progress)
                         .stroke(
-                            modeColor,
+                            viewModel.mode.modeColor,
                             style: StrokeStyle(lineWidth: 14, lineCap: .round)
                         )
                         .frame(width: 260, height: 260)
@@ -70,7 +70,6 @@ struct LandscapeWorkoutTimerView: View {
             // Right: Controls (vertical)
             VStack(spacing: 20) {
                 if viewModel.isWorkoutActive {
-                    // Workout active - show play/pause and stop
                     // Play/Pause button
                     Button(action: { viewModel.toggleTimer() }) {
                         Image(systemName: viewModel.isRunning ? "pause.fill" : "play.fill")
@@ -81,14 +80,14 @@ struct LandscapeWorkoutTimerView: View {
                                 LinearGradient(
                                     gradient: Gradient(colors: viewModel.isRunning
                                         ? [Color.red.opacity(0.8), Color.red]
-                                        : [modeColor, modeColorDark]
+                                        : [viewModel.mode.modeColor, viewModel.mode.modeColorDark]
                                     ),
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
                             )
                             .clipShape(Circle())
-                            .shadow(color: modeColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                            .shadow(color: viewModel.mode.modeColor.opacity(0.3), radius: 8, x: 0, y: 4)
                     }
                     .animation(.spring(response: 0.3, dampingFraction: 0.6), value: viewModel.isRunning)
 
@@ -112,13 +111,13 @@ struct LandscapeWorkoutTimerView: View {
                             .frame(width: 80, height: 80)
                             .background(
                                 LinearGradient(
-                                    gradient: Gradient(colors: [modeColor, modeColorDark]),
+                                    gradient: Gradient(colors: [viewModel.mode.modeColor, viewModel.mode.modeColorDark]),
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
                             )
                             .clipShape(Circle())
-                            .shadow(color: modeColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                            .shadow(color: viewModel.mode.modeColor.opacity(0.3), radius: 8, x: 0, y: 4)
                     }
                 }
             }
@@ -129,24 +128,6 @@ struct LandscapeWorkoutTimerView: View {
             CycleSelectorView { cycles in
                 viewModel.startWorkout(cycles: cycles)
             }
-        }
-    }
-
-    private var modeColor: Color {
-        switch viewModel.mode {
-        case .exercise:
-            return Color.exerciseOrange
-        case .rest:
-            return Color.restBlue
-        }
-    }
-
-    private var modeColorDark: Color {
-        switch viewModel.mode {
-        case .exercise:
-            return Color.exerciseOrangeDark
-        case .rest:
-            return Color.restBlueDark
         }
     }
 }
@@ -162,29 +143,7 @@ struct LandscapeWorkoutModeIndicator: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity)
-            .background(
-                isSelected
-                    ? LinearGradient(
-                        gradient: Gradient(colors: [modeColor.opacity(0.2), modeColor.opacity(0.1)]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    : LinearGradient(
-                        gradient: Gradient(colors: [Color.clear, Color.clear]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-            )
-            .cornerRadius(12)
-    }
-
-    private var modeColor: Color {
-        switch mode {
-        case .exercise:
-            return Color.exerciseOrange
-        case .rest:
-            return Color.restBlue
-        }
+            .modeSelectionBackground(isSelected: isSelected, color: mode.modeColor, selectedOpacity: (0.2, 0.1))
     }
 }
 

@@ -26,7 +26,6 @@ class WorkoutTimerViewModel: ObservableObject {
 
     private var timerSource: DispatchSourceTimer?
     private var endTime: Date?
-    private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
 
     private var totalTime: Int {
         switch mode {
@@ -298,9 +297,7 @@ class WorkoutTimerViewModel: ObservableObject {
     }
 
     func formatTime(_ seconds: Int) -> String {
-        let minutes = seconds / 60
-        let secs = seconds % 60
-        return String(format: "%02d:%02d", minutes, secs)
+        seconds.formattedTime
     }
 
     func updateSettings(_ newSettings: WorkoutSettings) {

@@ -163,23 +163,13 @@ class AppViewModel: ObservableObject {
     func completedPomodoro() {
         let today = Date().toDateString()
         let todayISO = Date().toISODateString()
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())?.toDateString()
 
         // Update progress
         progress.totalPomodoros += 1
         progress.todayPomodoros += 1
 
-        // Update streak - only update if this is the first pomodoro of the day
-        if lastCompletionDate != today {
-            if lastCompletionDate == yesterday {
-                // Continue streak
-                progress.currentStreak += 1
-            } else {
-                // Start new streak
-                progress.currentStreak = 1
-            }
-        }
-        // If lastCompletionDate == today, streak already updated, do nothing
+        // Update streak
+        updateStreak(lastDate: lastCompletionDate, today: today, streak: &progress.currentStreak)
 
         // Update history
         if let index = progress.history.firstIndex(where: { $0.date == todayISO }) {
@@ -216,18 +206,10 @@ class AppViewModel: ObservableObject {
     }
 
     private func unlockAnimals() {
-        let milestones: [(count: Int, animal: String)] = [
-            (3, "butterfly"),
-            (7, "bird"),
-            (15, "rabbit"),
-            (25, "deer"),
-            (40, "fox")
-        ]
-
-        for milestone in milestones {
-            if progress.totalPomodoros == milestone.count &&
-               !progress.animals.contains(milestone.animal) {
-                progress.animals.append(milestone.animal)
+        for animalType in AnimalType.allCases {
+            if progress.totalPomodoros == animalType.milestone &&
+               !progress.animals.contains(animalType.rawValue) {
+                progress.animals.append(animalType.rawValue)
             }
         }
     }
@@ -279,20 +261,11 @@ class AppViewModel: ObservableObject {
 
     func completedWorkout() {
         let today = Date().toDateString()
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())?.toDateString()
 
         workoutProgress.completedWorkouts += 1
 
-        // Update streak - only update if this is the first workout of the day
-        if lastWorkoutDate != today {
-            if lastWorkoutDate == yesterday {
-                // Continue streak
-                workoutProgress.currentStreak += 1
-            } else {
-                // Start new streak
-                workoutProgress.currentStreak = 1
-            }
-        }
+        // Update streak
+        updateStreak(lastDate: lastWorkoutDate, today: today, streak: &workoutProgress.currentStreak)
 
         // Save last workout date
         lastWorkoutDate = today
@@ -306,6 +279,12 @@ class AppViewModel: ObservableObject {
                 workoutProgress.equipment.append(equipmentType.rawValue)
             }
         }
+    }
+
+    private func updateStreak(lastDate: String?, today: String, streak: inout Int) {
+        guard lastDate != today else { return }
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())?.toDateString()
+        streak = (lastDate == yesterday) ? streak + 1 : 1
     }
 
     func switchToPomodoro() {

@@ -56,11 +56,21 @@ struct Progress: Codable, Equatable {
 }
 
 enum AnimalType: String, CaseIterable {
-    case butterfly = "🦋"
-    case bird = "🐦"
-    case rabbit = "🐰"
-    case deer = "🦌"
-    case fox = "🦊"
+    case butterfly = "butterfly"
+    case bird = "bird"
+    case rabbit = "rabbit"
+    case deer = "deer"
+    case fox = "fox"
+
+    var emoji: String {
+        switch self {
+        case .butterfly: return "🦋"
+        case .bird: return "🐦"
+        case .rabbit: return "🐰"
+        case .deer: return "🦌"
+        case .fox: return "🦊"
+        }
+    }
 
     var milestone: Int {
         switch self {
